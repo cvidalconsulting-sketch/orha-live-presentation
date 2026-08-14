@@ -1,7 +1,66 @@
-const scenarios={negative:{name:'Negativo',conversion:4,cpi:1.10,churn:10,profitableMonth:22,minimumCash:-63000,accumulatedProfit:-7500},moderate:{name:'Moderado',conversion:5,cpi:.90,churn:8,profitableMonth:15,minimumCash:-50955,accumulatedProfit:41593},positive:{name:'Positivo',conversion:6,cpi:.75,churn:6,profitableMonth:11,minimumCash:-42000,accumulatedProfit:117500}};
-const money=value=>new Intl.NumberFormat('es-MX',{style:'currency',currency:'USD',maximumFractionDigits:0}).format(value);
-const slides=[{key:'conversion',title:'Conversión',description:'Porcentaje de personas que completan la acción esperada.',format:v=>`${v.toFixed(1)}%`},{key:'cpi',title:'Costo por instalación',description:'Inversión promedio necesaria para sumar una nueva instalación.',format:v=>`$${v.toFixed(2)}`},{key:'churn',title:'Churn',description:'Porcentaje de usuarios que dejan el servicio en cada periodo.',format:v=>`${v}%`,inverse:true},{key:'profitableMonth',title:'Primer mes rentable',description:'Momento en que los ingresos mensuales superan los costos.',format:v=>`Mes ${v}`,inverse:true},{key:'minimumCash',title:'Caja mínima',description:'Punto de mayor necesidad de efectivo durante la proyección.',format:money},{key:'accumulatedProfit',title:'Utilidad acumulada',description:'Resultado total estimado al completar los primeros 48 meses.',format:money}];
-let activeScenario='moderate',activeSlide=0,timer=null;const $=s=>document.querySelector(s);
-function render(){const scenario=scenarios[activeScenario],slide=slides[activeSlide];$('#scenario-name').textContent=scenario.name;$('#slide-counter').textContent=`${String(activeSlide+1).padStart(2,'0')} / 06`;$('#slide-title').textContent=activeSlide===0?'Panorama del escenario':slide.title;$('#slide-description').textContent=slide.description;$('#metric-title').textContent=slide.title;$('#metric-value').textContent=slide.format(scenario[slide.key]);$('#progress').style.width=`${(activeSlide+1)/6*100}%`;document.querySelectorAll('[data-scenario]').forEach(b=>{const selected=b.dataset.scenario===activeScenario;b.classList.toggle('active',selected);b.setAttribute('aria-pressed',String(selected))});const values=Object.values(scenarios).map(x=>x[slide.key]),min=Math.min(...values),max=Math.max(...values);$('#bars').innerHTML=Object.entries(scenarios).map(([key,item])=>{const normalized=(item[slide.key]-min)/(max-min),visual=slide.inverse?1-normalized:normalized;return `<div class="bar-group ${key===activeScenario?'active':''}"><span class="bar-value">${slide.format(item[slide.key])}</span><div class="bar" style="height:${38+visual*57}%"></div><span class="bar-label">${item.name}</span></div>`}).join('');const metrics=[['Conversión',`${scenario.conversion.toFixed(1)}%`],['CPI',`$${scenario.cpi.toFixed(2)}`],['Churn',`${scenario.churn}%`],['Primer mes rentable',`Mes ${scenario.profitableMonth}`],['Caja mínima',money(scenario.minimumCash)],['Utilidad · 48 meses',money(scenario.accumulatedProfit)]];$('#metrics-grid').innerHTML=metrics.map(([label,value])=>`<div class="metric"><span>${label}</span><strong>${value}</strong></div>`).join('')}
-function setPlaying(playing){const button=$('#play-pause');if(playing){timer=setInterval(()=>{activeSlide=(activeSlide+1)%6;render()},4000);button.innerHTML='<span aria-hidden="true">Ⅱ</span><span>Pausar</span>';$('#playback-status').textContent='En reproducción'}else{clearInterval(timer);timer=null;button.innerHTML='<span aria-hidden="true">▶</span><span>Iniciar</span>';$('#playback-status').textContent='Presentación pausada'}}
-document.querySelectorAll('[data-scenario]').forEach(b=>b.addEventListener('click',()=>{activeScenario=b.dataset.scenario;render()}));$('#play-pause').addEventListener('click',()=>setPlaying(!timer));$('#next').addEventListener('click',()=>{activeSlide=(activeSlide+1)%6;render()});$('#previous').addEventListener('click',()=>{activeSlide=(activeSlide+5)%6;render()});render();window.ORHA={scenarios,slides,render,getState:()=>({activeScenario,activeSlide,playing:Boolean(timer)})};
+const scenes = [...document.querySelectorAll('[data-scene]')];
+const fragments = [...document.querySelectorAll('.fragment')];
+let activeScene = 0;
+let activeFragment = 0;
+let timer = null;
+
+const controls = {
+  previous: document.querySelector('#previous'),
+  next: document.querySelector('#next'),
+  playPause: document.querySelector('#play-pause'),
+  progress: document.querySelector('#progress'),
+  number: document.querySelector('#scene-number'),
+};
+
+function render() {
+  scenes.forEach((scene, index) => {
+    const active = index === activeScene;
+    scene.hidden = !active;
+    scene.classList.toggle('is-active', active);
+  });
+  fragments.forEach((fragment, index) => fragment.classList.toggle('is-visible', index <= activeFragment));
+  controls.number.textContent = String(activeScene + 1).padStart(2, '0');
+  controls.progress.style.width = `${(activeScene + 1) * 50}%`;
+  controls.previous.disabled = activeScene === 0;
+  controls.next.disabled = activeScene === scenes.length - 1;
+}
+
+function goToScene(index) {
+  activeScene = Math.max(0, Math.min(index, scenes.length - 1));
+  if (activeScene === 0) activeFragment = fragments.length - 1;
+  render();
+}
+
+function stopPlayback(label = 'Reproducir') {
+  window.clearInterval(timer);
+  timer = null;
+  controls.playPause.innerHTML = `<i>▶</i><span>${label}</span>`;
+}
+
+function play() {
+  if (activeScene === 1 || activeFragment === fragments.length - 1) {
+    activeScene = 0;
+    activeFragment = 0;
+    render();
+  }
+  controls.playPause.innerHTML = '<i>Ⅱ</i><span>Pausar</span>';
+  timer = window.setInterval(() => {
+    if (activeScene === 0 && activeFragment < fragments.length - 1) {
+      activeFragment += 1;
+      render();
+    } else if (activeScene === 0) {
+      activeScene = 1;
+      render();
+    } else {
+      stopPlayback('Repetir');
+    }
+  }, 2600);
+}
+
+controls.previous.addEventListener('click', () => goToScene(activeScene - 1));
+controls.next.addEventListener('click', () => goToScene(activeScene + 1));
+controls.playPause.addEventListener('click', () => timer ? stopPlayback() : play());
+document.querySelector('[data-go="1"]').addEventListener('click', () => goToScene(1));
+
+render();
+window.ORHA = { goToScene, play, stopPlayback, getState: () => ({ activeScene, activeFragment, playing: Boolean(timer) }) };

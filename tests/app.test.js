@@ -3,45 +3,67 @@ const fs = require('node:fs');
 const vm = require('node:vm');
 
 class Element {
-  constructor(dataset = {}) { this.dataset = dataset; this.textContent = ''; this.innerHTML = ''; this.style = {}; this.attributes = {}; this.listeners = {}; this.classList = { toggle: (name, on) => this.active = name === 'active' && on }; }
+  constructor() {
+    this.hidden = false;
+    this.disabled = false;
+    this.textContent = '';
+    this.innerHTML = '';
+    this.style = {};
+    this.listeners = {};
+    this.classes = new Set();
+    this.classList = { toggle: (name, active) => active ? this.classes.add(name) : this.classes.delete(name) };
+  }
   addEventListener(type, callback) { this.listeners[type] = callback; }
   click() { this.listeners.click(); }
-  setAttribute(name, value) { this.attributes[name] = value; }
 }
 
-const ids = ['scenario-name', 'slide-counter', 'slide-title', 'slide-description', 'metric-title', 'metric-value', 'progress', 'bars', 'metrics-grid', 'play-pause', 'playback-status', 'next', 'previous'];
-const elements = Object.fromEntries(ids.map(id => [`#${id}`, new Element()]));
-const scenarioButtons = ['negative', 'moderate', 'positive'].map(key => new Element({ scenario: key }));
+const scenes = [new Element(), new Element()];
+const fragments = Array.from({ length: 5 }, () => new Element());
+const elements = Object.fromEntries(['previous', 'next', 'play-pause', 'progress', 'scene-number'].map(id => [`#${id}`, new Element()]));
+elements['[data-go="1"]'] = new Element();
+
 const document = {
+  querySelectorAll: selector => selector === '[data-scene]' ? scenes : fragments,
   querySelector: selector => elements[selector],
-  querySelectorAll: selector => selector === '[data-scenario]' ? scenarioButtons : [],
 };
 let intervalCallback;
-const sandbox = { document, Intl, console, setInterval: callback => { intervalCallback = callback; return 1; }, clearInterval: () => {}, window: {} };
-sandbox.window = sandbox;
+const sandbox = {
+  document,
+  console,
+  window: {
+    setInterval: callback => { intervalCallback = callback; return 1; },
+    clearInterval: () => {},
+  },
+};
+
 vm.runInNewContext(fs.readFileSync('app.js', 'utf8'), sandbox);
 
-assert.equal(elements['#scenario-name'].textContent, 'Moderado');
-assert.match(elements['#metrics-grid'].innerHTML, /5\.0%/);
-
-scenarioButtons[0].click();
-assert.equal(elements['#scenario-name'].textContent, 'Negativo');
-assert.match(elements['#metrics-grid'].innerHTML, /-.*63,000/);
-assert.match(elements['#bars'].innerHTML, /Negativo/);
-
-scenarioButtons[2].click();
-assert.equal(elements['#scenario-name'].textContent, 'Positivo');
-assert.match(elements['#metrics-grid'].innerHTML, /117,500/);
+assert.deepEqual(JSON.parse(JSON.stringify(sandbox.window.ORHA.getState())), { activeScene: 0, activeFragment: 0, playing: false });
+assert.equal(scenes[0].hidden, false);
+assert.equal(scenes[1].hidden, true);
+assert.equal(elements['#previous'].disabled, true);
 
 elements['#next'].click();
-assert.equal(sandbox.ORHA.getState().activeSlide, 1);
-elements['#previous'].click();
-assert.equal(sandbox.ORHA.getState().activeSlide, 0);
-elements['#play-pause'].click();
-assert.equal(sandbox.ORHA.getState().playing, true);
-intervalCallback();
-assert.equal(sandbox.ORHA.getState().activeSlide, 1);
-elements['#play-pause'].click();
-assert.equal(sandbox.ORHA.getState().playing, false);
+assert.equal(sandbox.window.ORHA.getState().activeScene, 1);
+assert.equal(scenes[0].hidden, true);
+assert.equal(scenes[1].hidden, false);
+assert.equal(elements['#scene-number'].textContent, '02');
 
-console.log('Escenarios, gráficas y controles verificados.');
+elements['#previous'].click();
+assert.equal(sandbox.window.ORHA.getState().activeScene, 0);
+elements['#play-pause'].click();
+assert.equal(sandbox.window.ORHA.getState().playing, true);
+intervalCallback();
+assert.equal(sandbox.window.ORHA.getState().activeFragment, 1);
+elements['#play-pause'].click();
+assert.equal(sandbox.window.ORHA.getState().playing, false);
+
+const html = fs.readFileSync('index.html', 'utf8');
+assert.match(html, /Hola, Thelma/);
+assert.match(html, /−\$50,955/);
+assert.match(html, /YA INVERTIDO/);
+assert.match(html, /CAPITAL NUEVO EN RIESGO/);
+assert.match(html, /COLCHÓN RESTANTE/);
+assert.doesNotMatch(html, /ESCENA 3|data-scene="2"/);
+
+console.log('Las dos escenas, su contenido y navegación fueron verificados.');
