@@ -70,6 +70,49 @@ h1 em { color:var(--lime); font-style:normal; }
 .scene-summary { margin:14px 0 0; text-align:right; color:var(--cream); font:400 15px "Manrope"; }.scene-summary span { color:var(--peach); }
 .controls { display:grid; grid-template-columns:auto 1fr auto; align-items:center; gap:24px; }.controls>div:first-child { display:flex; align-items:center; gap:7px; }.controls button { height:36px; border:1px solid var(--line); background:#0c1c18; color:var(--cream); cursor:pointer; }.controls button:disabled { opacity:.28; cursor:not-allowed; }.controls #previous,.controls #next { width:36px; border-radius:50%; }.controls #play-pause { min-width:116px; display:flex; align-items:center; justify-content:center; gap:8px; border-radius:99px; color:var(--aqua); }.controls #play-pause i { font-style:normal; font-size:10px; }.scene-progress { height:1px; background:var(--line); }.scene-progress span { display:block; width:50%; height:100%; background:var(--lime); transition:.6s ease; }.controls>p { margin:0; color:#657a72; font:400 11px "Manrope"; }.controls>p b { color:var(--cream); font-size:16px; }
 @keyframes draw { to { stroke-dashoffset:0; } } @keyframes sceneIn { from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none} } @keyframes signal { to{height:25%} }
+
+/* Escena 2: Kairos conduce una lectura progresiva del riesgo. */
+.scene-two.is-active { display:grid; grid-template-columns:minmax(300px,31%) 1fr; padding:0; }
+.advisor-stage { position:relative; overflow:hidden; min-height:100%; padding:26px 25px; border-right:1px solid var(--line); background:radial-gradient(circle at 50% 23%,rgba(130,232,209,.18),transparent 34%),linear-gradient(165deg,#10251f,#071310 72%); }
+.advisor-stage:after { content:""; position:absolute; inset:0; pointer-events:none; background:linear-gradient(rgba(130,232,209,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(130,232,209,.025) 1px,transparent 1px); background-size:24px 24px; mask-image:linear-gradient(to bottom,#000,transparent 78%); }
+.advisor-orbit { position:absolute; top:15px; left:50%; width:320px; height:320px; border:1px solid rgba(130,232,209,.15); border-radius:50%; transform:translateX(-50%); box-shadow:0 0 0 55px rgba(130,232,209,.025),0 0 0 110px rgba(130,232,209,.018); }
+.advisor-portrait { top:12px; bottom:auto; width:255px; height:365px; transform:translateX(-50%) scale(.72); transform-origin:top center; }
+.advisor-status { position:absolute; z-index:5; top:22px; left:22px; display:flex; gap:8px; align-items:center; color:var(--aqua); font-size:7px; letter-spacing:.16em; }
+.advisor-status i { width:6px; height:6px; border-radius:50%; background:var(--aqua); box-shadow:0 0 11px var(--aqua); animation:pulse 1.5s ease infinite; }
+.speech-stage { position:absolute; z-index:6; left:24px; right:24px; bottom:110px; min-height:154px; padding:19px 18px 18px 21px; border:1px solid rgba(130,232,209,.22); border-left:2px solid var(--aqua); background:rgba(5,16,13,.88); backdrop-filter:blur(14px); box-shadow:0 18px 50px rgba(0,0,0,.24); }
+.speech-stage:before { content:"KAIROS · INTERPRETACIÓN"; display:block; margin-bottom:12px; color:var(--aqua); font-size:7px; letter-spacing:.18em; }
+.speech { position:absolute; inset:45px 18px 15px 21px; margin:0; color:#d6e0db; font:400 13px/1.55 "Manrope"; opacity:0; transform:translateY(8px); transition:.45s ease; pointer-events:none; }
+.speech.is-current { opacity:1; transform:none; }
+.speech strong { color:var(--cream); font-weight:500; }
+.advisor-actions { position:absolute; z-index:7; left:24px; right:24px; bottom:22px; }
+.advisor-actions button { width:100%; height:40px; display:flex; justify-content:space-between; align-items:center; padding:0 15px; border:1px solid rgba(232,255,145,.35); background:rgba(232,255,145,.07); color:var(--lime); cursor:pointer; font-size:8px; letter-spacing:.16em; }
+.advisor-actions button b { font-size:14px; }
+.advisor-actions button.is-complete { color:var(--sage); border-color:var(--line); }
+.advisor-actions p { margin:9px 0 0; color:#687e75; font-size:7px; letter-spacing:.1em; text-align:center; }
+.advisor-actions p i { display:inline-block; width:5px; height:5px; margin-right:5px; border:1px solid #687e75; border-radius:50%; }
+.analysis-stage { min-width:0; padding:3.6vh 2.3vw 18px; }
+.analysis-stage .scene-two-head { min-height:103px; }
+.analysis-stage .scene-two h2 { font-size:clamp(33px,3vw,50px); }
+.step-counter { align-self:center; display:grid; grid-template-columns:auto auto; align-items:end; padding-left:18px; border-left:1px solid var(--line); }
+.step-counter span { grid-column:1/3; color:var(--sage); font-size:7px; letter-spacing:.18em; }
+.step-counter b { color:var(--lime); font:400 27px "Manrope"; }.step-counter i { padding:0 0 4px 5px; color:#64776f; font-style:normal; font-size:9px; }
+.analysis-stage .timeline-card { height:310px; margin-top:1.8vh; }
+[data-reveal] { opacity:0; visibility:hidden; transform:translateY(8px); transition:opacity .55s ease,transform .55s ease,visibility .55s; }
+[data-reveal].is-revealed { opacity:1; visibility:visible; transform:none; }
+svg [data-reveal] { transform:none; }
+.timeline-card .curve-line { animation:none; stroke-dasharray:1; stroke-dashoffset:1; }
+.timeline-card .curve-line.is-revealed { animation:draw 1.35s ease forwards; }
+.timeline-card .curve-fill { transition-delay:.45s; }
+.timeline-card .recovery.curve-line { animation-duration:1.9s; }
+.interpretation { position:absolute; z-index:5; right:18px; top:18px; width:235px; padding:12px 14px; border:1px solid var(--line); background:rgba(7,18,15,.88); }
+.interpretation span { color:var(--aqua); font-size:7px; letter-spacing:.16em; }.interpretation p { margin:6px 0 0; color:var(--sage); font:400 10px/1.45 "Manrope"; }.interpretation b { color:var(--cream); font-weight:500; }
+.analysis-stage .capital-strip { margin-top:11px; }
+.analysis-stage .capital-strip article { min-height:80px; }
+.analysis-stage .capital-strip article:not(.is-revealed) { pointer-events:none; }
+.executive-close { display:flex; justify-content:space-between; align-items:center; min-height:45px; margin-top:10px; padding:8px 14px; border:1px solid rgba(232,255,145,.25); background:linear-gradient(90deg,rgba(232,255,145,.08),rgba(130,232,209,.04)); }
+.executive-close>span { color:var(--lime); font-size:7px; letter-spacing:.17em; }.executive-close p { display:flex; gap:18px; margin:0; }.executive-close b { position:relative; color:#d7e0dc; font:500 10px "Manrope"; }.executive-close b+b:before { content:""; position:absolute; left:-10px; top:4px; width:2px; height:2px; border-radius:50%; background:var(--lime); }
+@keyframes pulse { 50%{opacity:.35;box-shadow:0 0 3px var(--aqua)} }
+
 @media(max-width:900px){.experience{padding:0 20px;grid-template-rows:64px auto 74px}.scene[data-scene="0"]{grid-template-columns:1fr}.scene-one-copy{padding:40px 0 300px}.kairos{position:absolute;right:0;bottom:0;width:310px;height:370px;border-top:1px solid var(--line)}.portrait{transform:translateX(-50%) scale(.7);transform-origin:bottom}.truth-grid{margin-right:280px;grid-template-columns:1fr}.truth-grid article{min-height:82px}.truth-grid p{margin-top:15px}.transition-cue{bottom:0}.scene-two{padding-top:35px}.timeline-card{height:310px}.capital-strip strong{font-size:19px}.capital-strip small{position:static;display:block;margin-top:5px}}
 @media(max-width:620px){.session{display:none}.scene-one-copy{padding:35px 0 390px}.narrative{min-height:250px}.truth-grid{margin-right:0}.kairos{width:100%;height:360px}.transition-cue{width:100%;justify-content:space-between}.scene-two-head{display:block}.kairos-mini{margin-top:20px}.timeline-card{height:310px;overflow:visible;margin-bottom:15px}.chart-note{left:31%;top:35px}.milestone.profitable{left:35%;bottom:62px}.milestone.recovered{right:2%;top:80px}.capital-strip{grid-template-columns:1fr}.capital-strip article{min-height:76px}.scene-summary{text-align:left}.controls{grid-template-columns:1fr auto}.scene-progress{display:none}}
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
