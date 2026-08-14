@@ -10,6 +10,8 @@ class Element {
     this.innerHTML = '';
     this.style = {};
     this.dataset = {};
+    this.paused = true;
+    this.currentTime = 0;
     this.listeners = {};
     this.classes = new Set();
     this.classList = { toggle: (name, active) => active ? this.classes.add(name) : this.classes.delete(name) };
@@ -17,13 +19,14 @@ class Element {
   addEventListener(type, callback) { this.listeners[type] = callback; }
   click() { this.listeners.click(); }
   querySelector() { return this.label || (this.label = new Element()); }
+  pause() { this.paused = true; }
 }
 
 const scenes = [new Element(), new Element()];
 const fragments = Array.from({ length: 5 }, () => new Element());
-const speeches = Array.from({ length: 8 }, (_, index) => Object.assign(new Element(), { dataset: { speech: String(index) } }));
-const reveals = Array.from({ length: 9 }, (_, index) => Object.assign(new Element(), { dataset: { reveal: String(Math.min(index, 7)) } }));
-const elements = Object.fromEntries(['previous', 'next', 'play-pause', 'progress', 'scene-number', 'step-number', 'advance-step'].map(id => [`#${id}`, new Element()]));
+const speeches = Array.from({ length: 9 }, (_, index) => Object.assign(new Element(), { dataset: { speech: String(index) } }));
+const reveals = Array.from({ length: 9 }, (_, index) => Object.assign(new Element(), { dataset: { reveal: String(index) } }));
+const elements = Object.fromEntries(['previous', 'next', 'play-pause', 'progress', 'scene-number', 'step-number', 'replay-analysis', 'voice-status', 'kairos-scene-two-audio'].map(id => [`#${id}`, new Element()]));
 elements['[data-go="1"]'] = new Element();
 
 const document = {
@@ -41,6 +44,8 @@ const sandbox = {
 };
 
 vm.runInNewContext(fs.readFileSync('app.js', 'utf8'), sandbox);
+sandbox.window.ORHA.configureSceneTwoAudio({ src: '', voiceId: 'kairos-test' });
+assert.equal(elements['#kairos-scene-two-audio'].dataset.voiceId, 'kairos-test');
 
 assert.deepEqual(JSON.parse(JSON.stringify(sandbox.window.ORHA.getState())), { activeScene: 0, activeFragment: 0, activeStep: 0, playing: false });
 assert.equal(scenes[0].hidden, false);
@@ -55,13 +60,14 @@ assert.equal(elements['#scene-number'].textContent, '02');
 assert.equal(elements['#step-number'].textContent, '01');
 assert.equal(speeches[0].classes.has('is-current'), true);
 assert.equal(reveals[0].classes.has('is-revealed'), true);
-elements['#advance-step'].click();
+intervalCallback();
 assert.equal(sandbox.window.ORHA.getState().activeStep, 1);
 assert.equal(speeches[1].classes.has('is-current'), true);
-for (let step = 2; step <= 7; step += 1) sandbox.window.ORHA.advanceAnalysis();
-assert.equal(sandbox.window.ORHA.getState().activeStep, 7);
-assert.equal(speeches[7].classes.has('is-current'), true);
-assert.equal(elements['#advance-step'].classes.has('is-complete'), true);
+for (let step = 2; step <= 8; step += 1) intervalCallback();
+assert.equal(sandbox.window.ORHA.getState().activeStep, 8);
+assert.equal(speeches[8].classes.has('is-current'), true);
+intervalCallback();
+assert.equal(sandbox.window.ORHA.getState().playing, false);
 
 elements['#previous'].click();
 assert.equal(sandbox.window.ORHA.getState().activeScene, 0);
@@ -78,6 +84,10 @@ assert.match(html, /−\$50,955/);
 assert.match(html, /YA INVERTIDO/);
 assert.match(html, /CAPITAL NUEVO EN RIESGO/);
 assert.match(html, /COLCHÓN RESTANTE/);
+assert.match(html, /id="kairos-avatar-mount"/);
+assert.match(html, /data-provider="elevenlabs"/);
+assert.equal((html.match(/data-speech=/g) || []).length, 9);
+assert.equal(reveals[8].classes.has('is-revealed'), true);
 assert.doesNotMatch(html, /ESCENA 3|data-scene="2"/);
 
 console.log('Las dos escenas, su contenido y navegación fueron verificados.');
