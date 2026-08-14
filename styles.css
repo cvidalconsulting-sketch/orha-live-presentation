@@ -76,7 +76,10 @@ h1 em { color:var(--lime); font-style:normal; }
 .advisor-stage { position:relative; overflow:hidden; min-height:100%; padding:26px 25px; border-right:1px solid var(--line); background:radial-gradient(circle at 50% 23%,rgba(130,232,209,.18),transparent 34%),linear-gradient(165deg,#10251f,#071310 72%); }
 .advisor-stage:after { content:""; position:absolute; inset:0; pointer-events:none; background:linear-gradient(rgba(130,232,209,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(130,232,209,.025) 1px,transparent 1px); background-size:24px 24px; mask-image:linear-gradient(to bottom,#000,transparent 78%); }
 .advisor-orbit { position:absolute; top:15px; left:50%; width:320px; height:320px; border:1px solid rgba(130,232,209,.15); border-radius:50%; transform:translateX(-50%); box-shadow:0 0 0 55px rgba(130,232,209,.025),0 0 0 110px rgba(130,232,209,.018); }
-.advisor-portrait { top:12px; bottom:auto; width:255px; height:365px; transform:translateX(-50%) scale(.72); transform-origin:top center; }
+.avatar-mount { position:absolute; z-index:2; top:58px; left:50%; width:220px; height:250px; transform:translateX(-50%); display:grid; place-items:center; }
+.avatar-frame { width:168px; height:210px; display:grid; place-items:center; border:1px solid rgba(130,232,209,.22); border-radius:50% 50% 42% 42%; background:radial-gradient(circle,rgba(130,232,209,.08),transparent 65%); color:#6b8178; text-align:center; font:500 9px/1.6 "Manrope"; letter-spacing:.16em; }
+.avatar-frame i { position:absolute; inset:9px 25px 31px; border:1px dashed rgba(130,232,209,.16); border-radius:50%; }
+.avatar-mount small { position:absolute; bottom:0; color:var(--aqua); font-size:6px; letter-spacing:.2em; }
 .advisor-status { position:absolute; z-index:5; top:22px; left:22px; display:flex; gap:8px; align-items:center; color:var(--aqua); font-size:7px; letter-spacing:.16em; }
 .advisor-status i { width:6px; height:6px; border-radius:50%; background:var(--aqua); box-shadow:0 0 11px var(--aqua); animation:pulse 1.5s ease infinite; }
 .speech-stage { position:absolute; z-index:6; left:24px; right:24px; bottom:110px; min-height:154px; padding:19px 18px 18px 21px; border:1px solid rgba(130,232,209,.22); border-left:2px solid var(--aqua); background:rgba(5,16,13,.88); backdrop-filter:blur(14px); box-shadow:0 18px 50px rgba(0,0,0,.24); }
@@ -87,7 +90,7 @@ h1 em { color:var(--lime); font-style:normal; }
 .advisor-actions { position:absolute; z-index:7; left:24px; right:24px; bottom:22px; }
 .advisor-actions button { width:100%; height:40px; display:flex; justify-content:space-between; align-items:center; padding:0 15px; border:1px solid rgba(232,255,145,.35); background:rgba(232,255,145,.07); color:var(--lime); cursor:pointer; font-size:8px; letter-spacing:.16em; }
 .advisor-actions button b { font-size:14px; }
-.advisor-actions button.is-complete { color:var(--sage); border-color:var(--line); }
+.advisor-actions button.is-playing { color:var(--sage); border-color:var(--line); }
 .advisor-actions p { margin:9px 0 0; color:#687e75; font-size:7px; letter-spacing:.1em; text-align:center; }
 .advisor-actions p i { display:inline-block; width:5px; height:5px; margin-right:5px; border:1px solid #687e75; border-radius:50%; }
 .analysis-stage { min-width:0; padding:3.6vh 2.3vw 18px; }
