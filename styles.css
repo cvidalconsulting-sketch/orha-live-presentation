@@ -13,7 +13,7 @@ button:focus-visible,a:focus-visible { outline:2px solid var(--lime); outline-of
 .session { color:var(--sage); font-size:9px; letter-spacing:.2em; }
 .session i { display:inline-block; width:6px; height:6px; margin-right:8px; border-radius:50%; background:var(--aqua); box-shadow:0 0 16px var(--aqua); }
 .scene { position:relative; min-height:0; overflow:hidden; border-bottom:1px solid var(--line); }
-.scene[hidden] { display:none; }
+.scene[hidden] { display:none !important; }
 .scene.is-active { animation:sceneIn .8s cubic-bezier(.2,.75,.25,1) both; }
 .scene[data-scene="0"] { display:grid; grid-template-columns:minmax(520px,1.15fr) minmax(360px,.85fr); }
 .scene-one-copy { padding:5.7vh 5vw 3vh 1.2vw; position:relative; z-index:2; }
