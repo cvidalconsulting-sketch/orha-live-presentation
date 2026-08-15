@@ -91,6 +91,30 @@ const timelines = {
     'Si los datos no responden, corregimos antes de convertir una hipótesis equivocada en un costo fijo mayor.',
     'Los tres caminos pueden conducir a la misma ORHA.',
     'La pregunta no es cuál ORHA quieres construir. Esa ya la definiste. La pregunta es cuánto capital quieres arriesgar antes de demostrar que el mercado también la quiere.'
+  ],
+  6: [
+    'Hemos definido cuánto capital existe y qué caminos puedes seguir. Ahora falta establecer cuándo se gana el derecho a liberar más dinero.',
+    'Yo no liberaría capital simplemente porque pasó otro mes. Cada tramo debe cruzar una puerta.',
+    'La primera puerta ocurre antes del lanzamiento.',
+    'Antes de gastar en adquisición, debemos saber exactamente qué vamos a medir: conversión, costo real de adquisición, retención, churn y costo real de servir a cada usuario.',
+    'También debemos decidir qué arquitectura estamos probando: App Store, ORHA Direct o una combinación. Porque cada camino tiene un funnel diferente y no deben medirse como si fueran iguales.',
+    'La segunda puerta llega aproximadamente al final de los primeros tres meses.',
+    'El modelo actual habría acumulado para entonces cerca de 36 mil 438 dólares de exposición total. Como 24 mil 918 ya estaban invertidos, hablamos de aproximadamente 11 mil 500 dólares de capital nuevo.',
+    'Mi propuesta sería fijar un límite cercano a 13 mil dólares antes de esta primera revisión. Ese no es un dato del modelo. Es un umbral de control.',
+    'En ese momento ya debemos conocer la conversión real y el costo real de adquirir un cliente.',
+    'Si la conversión está por debajo de aproximadamente 4.5%, yo corregiría antes de seguir escalando.',
+    'Si está entre 4.5% y 5%, continuaría con cautela y buscaría entender qué está limitando el resultado.',
+    'Y si se sostiene alrededor de 5% o mejor, empieza a validarse el escenario base.',
+    'La tercera puerta llega al terminar el piloto de seis meses.',
+    'El propio modelo condiciona la inversión publicitaria posterior a que el piloto haya validado el costo de adquisición.',
+    'A esa altura no basta con conseguir usuarios. Necesitamos demostrar que permanecen.',
+    'Conversión, CAC, retención y churn deben observarse juntos. Un buen costo de adquisición no sirve si el cliente abandona demasiado rápido.',
+    'Si los resultados superan el modelo, aceleramos.',
+    'Si están cerca, continuamos con disciplina.',
+    'Si están por debajo, corregimos antes de liberar el siguiente tramo.',
+    'Y si varias señales se deterioran al mismo tiempo, conservar capital puede ser una decisión más inteligente que insistir.',
+    'Cada puerta tiene una sola función: evitar que una hipótesis equivocada consuma el capital antes de que tengamos oportunidad de corregirla.',
+    'El dinero se libera cuando la evidencia gana el derecho a pedirlo.'
   ]
 };
 
