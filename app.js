@@ -140,6 +140,10 @@ const sceneMedia = {
   0: {
     src: 'media/scene-01-kairos.mp3',
     cues: [0, 2.16, 6.88, 18.05, 25.77, 34.12]
+  },
+  1: {
+    src: 'media/scene-02-kairos.mp3',
+    cues: [0, 7.74, 11.61, 18.90, 24.45, 30.92, 38.29, 42.46, 47.27]
   }
 };
 
