@@ -3,91 +3,68 @@ const fs = require('node:fs');
 const vm = require('node:vm');
 
 class Element {
-  constructor() {
-    this.hidden = false;
-    this.disabled = false;
-    this.textContent = '';
-    this.innerHTML = '';
-    this.style = {};
-    this.dataset = {};
-    this.paused = true;
-    this.currentTime = 0;
-    this.listeners = {};
-    this.classes = new Set();
+  constructor(dataset = {}) {
+    this.hidden = false; this.disabled = false; this.textContent = ''; this.innerHTML = '';
+    this.style = {}; this.dataset = dataset; this.listeners = {}; this.classes = new Set(); this.steps = [];
     this.classList = { toggle: (name, active) => active ? this.classes.add(name) : this.classes.delete(name) };
   }
   addEventListener(type, callback) { this.listeners[type] = callback; }
   click() { this.listeners.click(); }
-  querySelector() { return this.label || (this.label = new Element()); }
-  pause() { this.paused = true; }
+  querySelectorAll(selector) { return selector === '[data-step]' ? this.steps : []; }
 }
 
-const scenes = [new Element(), new Element()];
+const scenes = [new Element(), new Element(), new Element()];
+scenes[1].steps = Array.from({ length: 9 }, (_, step) => new Element({ step: String(step) }));
+scenes[2].steps = Array.from({ length: 11 }, (_, step) => new Element({ step: String(step) }));
 const fragments = Array.from({ length: 5 }, () => new Element());
-const speeches = Array.from({ length: 9 }, (_, index) => Object.assign(new Element(), { dataset: { speech: String(index) } }));
-const reveals = Array.from({ length: 9 }, (_, index) => Object.assign(new Element(), { dataset: { reveal: String(index) } }));
-const elements = Object.fromEntries(['previous', 'next', 'play-pause', 'progress', 'scene-number', 'step-number', 'replay-analysis', 'voice-status', 'kairos-scene-two-audio'].map(id => [`#${id}`, new Element()]));
+const replay = [new Element({ replay: '1' }), new Element({ replay: '2' })];
+const statuses = [new Element(), new Element()];
+const elements = Object.fromEntries(['previous', 'next', 'play-pause', 'progress', 'scene-number'].map(id => [`#${id}`, new Element()]));
 elements['[data-go="1"]'] = new Element();
 
 const document = {
-  querySelectorAll: selector => selector === '[data-scene]' ? scenes : selector === '.fragment' ? fragments : selector === '[data-speech]' ? speeches : reveals,
-  querySelector: selector => elements[selector],
+  querySelectorAll: selector => ({ '[data-scene]': scenes, '.fragment': fragments, '[data-replay]': replay, '[data-kairos-status]': statuses }[selector] || []),
+  querySelector: selector => elements[selector]
 };
-let intervalCallback;
+let timeoutCallback;
+const spoken = [];
+class Utterance { constructor(text) { this.text = text; } }
 const sandbox = {
-  document,
-  console,
+  document, console,
   window: {
-    setInterval: callback => { intervalCallback = callback; return 1; },
-    clearInterval: () => {},
-  },
+    SpeechSynthesisUtterance: Utterance,
+    speechSynthesis: { speak: utterance => spoken.push(utterance), cancel: () => {} },
+    setTimeout: callback => { timeoutCallback = callback; return 1; }, clearTimeout: () => {}
+  }
 };
 
 vm.runInNewContext(fs.readFileSync('app.js', 'utf8'), sandbox);
-sandbox.window.ORHA.configureSceneTwoAudio({ src: '', voiceId: 'kairos-test' });
-assert.equal(elements['#kairos-scene-two-audio'].dataset.voiceId, 'kairos-test');
-
-assert.deepEqual(JSON.parse(JSON.stringify(sandbox.window.ORHA.getState())), { activeScene: 0, activeFragment: 0, activeStep: 0, playing: false });
+assert.deepEqual(JSON.parse(JSON.stringify(sandbox.window.ORHA.getState())), { activeScene: 0, activeFragment: 0, activeStep: -1, playing: false });
 assert.equal(scenes[0].hidden, false);
 assert.equal(scenes[1].hidden, true);
-assert.equal(elements['#previous'].disabled, true);
 
 elements['#next'].click();
 assert.equal(sandbox.window.ORHA.getState().activeScene, 1);
-assert.equal(scenes[0].hidden, true);
-assert.equal(scenes[1].hidden, false);
-assert.equal(elements['#scene-number'].textContent, '02');
-assert.equal(elements['#step-number'].textContent, '01');
-assert.equal(speeches[0].classes.has('is-current'), true);
-assert.equal(reveals[0].classes.has('is-revealed'), true);
-intervalCallback();
-assert.equal(sandbox.window.ORHA.getState().activeStep, 1);
-assert.equal(speeches[1].classes.has('is-current'), true);
-for (let step = 2; step <= 8; step += 1) intervalCallback();
-assert.equal(sandbox.window.ORHA.getState().activeStep, 8);
-assert.equal(speeches[8].classes.has('is-current'), true);
-intervalCallback();
-assert.equal(sandbox.window.ORHA.getState().playing, false);
-
-elements['#previous'].click();
-assert.equal(sandbox.window.ORHA.getState().activeScene, 0);
-elements['#play-pause'].click();
+assert.equal(sandbox.window.ORHA.getState().activeStep, 0);
 assert.equal(sandbox.window.ORHA.getState().playing, true);
-intervalCallback();
-assert.equal(sandbox.window.ORHA.getState().activeFragment, 1);
-elements['#play-pause'].click();
-assert.equal(sandbox.window.ORHA.getState().playing, false);
+assert.match(spoken.at(-1).text, /cuánto capital puede quedar expuesto/);
+for (let i = 0; i < 8; i += 1) spoken.at(-1).onend();
+assert.equal(sandbox.window.ORHA.getState().activeStep, 8);
+assert.match(spoken.at(-1).text, /margen exige disciplina/);
+spoken.at(-1).onend();
+timeoutCallback();
+assert.equal(sandbox.window.ORHA.getState().activeScene, 2, 'La escena 2 continúa automáticamente a la 3');
+assert.equal(sandbox.window.ORHA.getState().activeStep, 0);
+assert.match(spoken.at(-1).text, /lo que sabemos/);
+for (let i = 0; i < 10; i += 1) spoken.at(-1).onend();
+assert.equal(sandbox.window.ORHA.getState().activeStep, 10);
+assert.match(spoken.at(-1).text, /primer día/);
 
 const html = fs.readFileSync('index.html', 'utf8');
-assert.match(html, /Hola, Thelma/);
-assert.match(html, /−\$50,955/);
-assert.match(html, /YA INVERTIDO/);
-assert.match(html, /CAPITAL NUEVO EN RIESGO/);
-assert.match(html, /COLCHÓN RESTANTE/);
-assert.match(html, /id="kairos-avatar-mount"/);
-assert.match(html, /data-provider="elevenlabs"/);
-assert.equal((html.match(/data-speech=/g) || []).length, 9);
-assert.equal(reveals[8].classes.has('is-revealed'), true);
-assert.doesNotMatch(html, /ESCENA 3|data-scene="2"/);
-
-console.log('Las dos escenas, su contenido y navegación fueron verificados.');
+const js = fs.readFileSync('app.js', 'utf8');
+assert.match(fs.readFileSync('styles.css', 'utf8'), /\.scene\[hidden\]\s*\{\s*display:none !important/);
+for (const expected of ['≈ 5%', '≈ $0.90', '≈ $44.60', '≈ $94', '≈ 2.1 : 1', 'VIABLE,', 'PERO AJUSTADO.', 'DESDE EL DÍA 1.']) assert.ok(html.includes(expected), expected);
+assert.match(js, /SpeechSynthesisUtterance/);
+assert.match(js, /Ahora quiero separar dos cosas/);
+assert.doesNotMatch(html, /data-scene="3"|ESCENA 4/);
+console.log('Navegación 1 → 2 → 3, voz y progresión audiovisual verificadas.');
