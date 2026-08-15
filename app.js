@@ -59,6 +59,20 @@ const timelines = {
     'Pero financieramente es la diferencia entre consumir prácticamente todo el capital disponible y construir un negocio saludable.',
     'Por eso la conversión no es una métrica secundaria.',
     'Es una de las variables que decidirán el resultado de ORHA.'
+  ],
+  4: [
+    'Ahora viene la parte más importante: qué haría yo con esta información.',
+    'No comprometería los 39 mil dólares líquidos de una sola vez.',
+    'Eso no significa invertir menos. Significa liberar capital progresivamente, a medida que ORHA demuestre que los supuestos del modelo se están cumpliendo.',
+    'Cada nueva inversión debe comprar algo más valioso que crecimiento: debe comprar evidencia.',
+    'La conversión, el costo de adquisición, la retención y el churn deben determinar cuánto capital se libera después.',
+    'Si los resultados son mejores que el modelo, aceleramos.',
+    'Si están cerca del modelo, continuamos con disciplina.',
+    'Y si son peores que el modelo, ajustamos antes de seguir exponiendo capital. Si la evidencia lo exige, detenemos.',
+    'El capital no es solamente dinero disponible. También es tiempo para aprender antes de quedarnos sin opciones.',
+    'Por eso mi recomendación no es invertir menos.',
+    'Es invertir con control.',
+    'Evidencia antes de liberar más capital.'
   ]
 };
 
