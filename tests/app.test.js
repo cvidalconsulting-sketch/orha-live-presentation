@@ -13,11 +13,12 @@ class Element {
   querySelectorAll(selector) { return selector === '[data-step]' ? this.steps : []; }
 }
 
-const scenes = [new Element(), new Element(), new Element()];
+const scenes = [new Element(), new Element(), new Element(), new Element()];
 scenes[1].steps = Array.from({ length: 9 }, (_, step) => new Element({ step: String(step) }));
 scenes[2].steps = Array.from({ length: 11 }, (_, step) => new Element({ step: String(step) }));
+scenes[3].steps = Array.from({ length: 25 }, (_, step) => new Element({ step: String(step) }));
 const fragments = Array.from({ length: 5 }, () => new Element());
-const replay = [new Element({ replay: '1' }), new Element({ replay: '2' })];
+const replay = [new Element({ replay: '1' }), new Element({ replay: '2' }), new Element({ replay: '3' })];
 const statuses = [new Element(), new Element()];
 const elements = Object.fromEntries(['previous', 'next', 'play-pause', 'progress', 'scene-number'].map(id => [`#${id}`, new Element()]));
 elements['[data-go="1"]'] = new Element();
@@ -85,12 +86,24 @@ assert.match(spoken.at(-1).text, /lo que sabemos/);
 for (let i = 0; i < 10; i += 1) { spoken.at(-1).onend(); spoken.at(-1).onstart(); }
 assert.equal(sandbox.window.ORHA.getState().activeStep, 10);
 assert.match(spoken.at(-1).text, /primer día/);
+spoken.at(-1).onend();
+timeoutCallback();
+assert.equal(sandbox.window.ORHA.getState().activeScene, 3);
+assert.match(spoken.at(-1).text, /variable más importante/);
+spoken.at(-1).onstart();
+assert.equal(sandbox.window.ORHA.getState().activeStep, 0);
+for (let i = 0; i < 24; i += 1) { spoken.at(-1).onend(); spoken.at(-1).onstart(); }
+assert.equal(sandbox.window.ORHA.getState().activeStep, 24);
+assert.match(spoken.at(-1).text, /resultado de ORHA/);
 
 const html = fs.readFileSync('index.html', 'utf8');
 const js = fs.readFileSync('app.js', 'utf8');
 assert.match(fs.readFileSync('styles.css', 'utf8'), /\.scene\[hidden\]\s*\{\s*display:none !important/);
 for (const expected of ['≈ 5%', '≈ $0.90', '≈ $44.60', '≈ $94', '≈ 2.1 : 1', 'VIABLE,', 'PERO AJUSTADO.', 'DESDE EL DÍA 1.']) assert.ok(html.includes(expected), expected);
+for (const expected of ['≈ MES 22', '≈ $58K – $63K', '&gt; 48 MESES', 'MES 15', '$50,955', 'MES 43', 'RESULTADO OPERATIVO ACUMULADO GENERADO · 48 MESES', '≈ $41,593', '≈ $96,500', '2 PUNTOS PORCENTUALES']) assert.ok(html.includes(expected), expected);
+assert.ok(!html.includes('≈ MES 19–20'));
+assert.equal((html.match(/scenario-curve/g) || []).length, 3);
 assert.match(js, /SpeechSynthesisUtterance/);
 assert.match(js, /Ahora quiero separar dos cosas/);
-assert.doesNotMatch(html, /data-scene="3"|ESCENA 4/);
-console.log('Navegación 1 → 2 → 3, voz y progresión audiovisual verificadas.');
+assert.doesNotMatch(html, /data-scene="4"|ESCENA 5/);
+console.log('Navegación 1 → 2 → 3 → 4, voz y progresión audiovisual verificadas.');
