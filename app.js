@@ -73,6 +73,24 @@ const timelines = {
     'Por eso mi recomendación no es invertir menos.',
     'Es invertir con control.',
     'Evidencia antes de liberar más capital.'
+  ],
+  5: [
+    'Ahora quiero mostrarte que existe más de una forma de construir la misma ORHA.',
+    'La visión no tiene que cambiar. La calidad tampoco. Lo que puede cambiar es cuánto capital decides comprometer antes de saber qué está funcionando.',
+    'El primer camino es el modelo actual.',
+    'Hoy ese modelo contempla una comisión de tienda del 15%, mil quinientos dólares mensuales de pauta y dos mil doscientos dólares mensuales de agencia.',
+    'Son tres mil setecientos dólares mensuales de marketing, además de una estructura que compromete varios costos desde el comienzo.',
+    'Este camino puede funcionar. Pero es también el que deja menos espacio para equivocarse antes de haber aprendido del mercado.',
+    'El segundo camino mantiene la misma ORHA, pero optimiza la arquitectura alrededor del producto.',
+    'ORHA Direct puede convertirse en el núcleo del servicio. El App Store puede ser un canal adicional cuando demuestre que produce suficiente valor para justificar su costo.',
+    'La publicidad se mantiene porque necesitamos aprender. Lo que no tiene que mantenerse automáticamente es toda la estructura fija alrededor de ella.',
+    'La landing, la operación de marketing y otros componentes pueden construirse de forma más eficiente sin reducir la experiencia que recibe el cliente.',
+    'El tercer camino lleva ese principio más lejos: evidencia primero.',
+    'En lugar de comprometer toda la estructura desde el inicio, liberamos capital por etapas y utilizamos cada etapa para medir conversión, adquisición, retención y churn.',
+    'Si los datos responden mejor de lo esperado, aceleramos y podemos incorporar más inversión, más canales y proveedores premium.',
+    'Si los datos no responden, corregimos antes de convertir una hipótesis equivocada en un costo fijo mayor.',
+    'Los tres caminos pueden conducir a la misma ORHA.',
+    'La pregunta no es cuál ORHA quieres construir. Esa ya la definiste. La pregunta es cuánto capital quieres arriesgar antes de demostrar que el mercado también la quiere.'
   ]
 };
 
