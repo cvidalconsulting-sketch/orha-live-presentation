@@ -78,6 +78,10 @@
         src: 'media/scene-05-kairos.mp3',
         cues: [0, 5.52, 10.60, 20.47, 26.43, 34.56, 38.77, 42.54, 51.11, 58.81, 62.58, 64.60]
       };
+      window.ORHA.sceneMedia[5] = {
+        src: 'media/scene-06-kairos.mp3',
+        cues: [0, 6.40, 16.82, 20.40, 30.82, 39.23, 48.05, 54.44, 66.08, 75.70, 85.73, 90.51, 101.34, 109.75, 117.35, 121.73]
+      };
     }
     if (introPlay) introPlay.disabled = false;
     if (introStatus && !window.ORHA?.getState?.().playing) introStatus.textContent = 'KAIROS · LISTA';
