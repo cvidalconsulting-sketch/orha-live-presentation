@@ -136,6 +136,13 @@ const timelines = {
   ]
 };
 
+const sceneMedia = {
+  0: {
+    src: 'media/scene-01-kairos.mp3',
+    cues: [0, 2.16, 6.88, 18.05, 25.77, 34.12]
+  }
+};
+
 let activeScene = 0;
 let activeFragment = 0;
 let activeStep = -1;
@@ -143,6 +150,8 @@ let playing = false;
 let playbackId = 0;
 let fallbackTimer = null;
 let activeUtterance = null;
+let activeAudio = null;
+let mediaFallbackUsed = false;
 
 const controls = {
   previous: document.querySelector('#previous'), next: document.querySelector('#next'),
@@ -167,15 +176,31 @@ function render() {
   controls.next.disabled = activeScene === scenes.length - 1;
 }
 
+function setKairosStatus(status, introStatus = status) {
+  document.querySelectorAll('[data-kairos-status]').forEach(item => { item.textContent = status; });
+  document.querySelector('[data-intro-status]').textContent = `KAIROS · ${introStatus}`;
+}
+
+function stopActiveAudio() {
+  if (!activeAudio) return;
+  activeAudio.pause?.();
+  try { activeAudio.currentTime = 0; } catch (_) {}
+  activeAudio.ontimeupdate = null;
+  activeAudio.onended = null;
+  activeAudio.onerror = null;
+  activeAudio = null;
+}
+
 function cancelPlayback(label = 'Reproducir') {
   playbackId += 1;
   playing = false;
   window.clearTimeout(fallbackTimer);
+  stopActiveAudio();
   if (activeUtterance || window.speechSynthesis?.speaking) window.speechSynthesis.cancel();
   activeUtterance = null;
+  mediaFallbackUsed = false;
   controls.playPause.innerHTML = `<i>▶</i><span>${label}</span>`;
-  document.querySelectorAll('[data-kairos-status]').forEach(item => { item.textContent = 'LISTA PARA PRESENTAR'; });
-  document.querySelector('[data-intro-status]').textContent = 'KAIROS · LISTA';
+  setKairosStatus('LISTA PARA PRESENTAR', 'LISTA');
 }
 
 function speak(text, started, done, id) {
@@ -205,25 +230,26 @@ function speak(text, started, done, id) {
   }
 }
 
-function playTimeline(sceneIndex, fromStart = true) {
+function completeTimeline(sceneIndex, id) {
+  if (id !== playbackId || activeScene !== sceneIndex) return;
+  playing = false;
+  controls.playPause.innerHTML = '<i>↻</i><span>Repetir</span>';
+  setKairosStatus('PRESENTACIÓN COMPLETA', 'COMPLETA');
+  if (sceneIndex < scenes.length - 1) fallbackTimer = window.setTimeout(() => goToScene(sceneIndex + 1), 120);
+}
+
+function playSpeechTimeline(sceneIndex, fromStart = true) {
   activeStep = fromStart ? -1 : activeStep;
   const id = playbackId;
   const lines = timelines[sceneIndex];
   let lineIndex = 0;
   playing = true;
   controls.playPause.innerHTML = '<i>Ⅱ</i><span>Pausar</span>';
-  document.querySelectorAll('[data-kairos-status]').forEach(item => { item.textContent = 'HABLANDO AHORA'; });
-  document.querySelector('[data-intro-status]').textContent = 'KAIROS · HABLANDO';
+  setKairosStatus('HABLANDO AHORA', 'HABLANDO');
   render();
   const nextLine = () => {
     if (id !== playbackId || activeScene !== sceneIndex) return;
-    if (lineIndex >= lines.length) {
-      playing = false;
-      controls.playPause.innerHTML = '<i>↻</i><span>Repetir</span>';
-      document.querySelectorAll('[data-kairos-status]').forEach(item => { item.textContent = 'PRESENTACIÓN COMPLETA'; });
-      if (sceneIndex < scenes.length - 1) fallbackTimer = window.setTimeout(() => goToScene(sceneIndex + 1), 120);
-      return;
-    }
+    if (lineIndex >= lines.length) return completeTimeline(sceneIndex, id);
     const currentStep = lineIndex;
     speak(lines[lineIndex], () => {
       activeStep = currentStep;
@@ -232,6 +258,64 @@ function playTimeline(sceneIndex, fromStart = true) {
     }, () => { lineIndex += 1; nextLine(); }, id);
   };
   nextLine();
+}
+
+function playMediaTimeline(sceneIndex, fromStart = true) {
+  const config = sceneMedia[sceneIndex];
+  if (!config || typeof window.Audio !== 'function') return playSpeechTimeline(sceneIndex, fromStart);
+
+  activeStep = fromStart ? -1 : activeStep;
+  if (sceneIndex === 0) activeFragment = -1;
+  const id = playbackId;
+  const audio = new window.Audio(config.src);
+  activeAudio = audio;
+  mediaFallbackUsed = false;
+  playing = true;
+  controls.playPause.innerHTML = '<i>Ⅱ</i><span>Pausar</span>';
+  setKairosStatus('HABLANDO AHORA', 'VOZ REAL');
+  render();
+
+  const revealAt = time => {
+    if (id !== playbackId || activeScene !== sceneIndex) return;
+    let cueIndex = -1;
+    for (let i = 0; i < config.cues.length; i += 1) {
+      if (time + 0.04 >= config.cues[i]) cueIndex = i;
+      else break;
+    }
+    if (cueIndex < 0 || cueIndex === activeStep) return;
+    activeStep = cueIndex;
+    if (sceneIndex === 0) activeFragment = cueIndex - 1;
+    render();
+  };
+
+  const fallbackToSpeech = () => {
+    if (mediaFallbackUsed || id !== playbackId || activeScene !== sceneIndex) return;
+    mediaFallbackUsed = true;
+    stopActiveAudio();
+    playSpeechTimeline(sceneIndex, true);
+  };
+
+  audio.preload = 'auto';
+  audio.ontimeupdate = () => revealAt(audio.currentTime || 0);
+  audio.onplaying = () => revealAt(audio.currentTime || 0);
+  audio.onended = () => {
+    if (id !== playbackId || activeScene !== sceneIndex) return;
+    activeAudio = null;
+    activeStep = config.cues.length - 1;
+    if (sceneIndex === 0) activeFragment = fragments.length - 1;
+    render();
+    completeTimeline(sceneIndex, id);
+  };
+  audio.onerror = fallbackToSpeech;
+
+  let playResult;
+  try { playResult = audio.play(); } catch (_) { fallbackToSpeech(); return; }
+  if (playResult?.catch) playResult.catch(fallbackToSpeech);
+}
+
+function playTimeline(sceneIndex, fromStart = true) {
+  if (sceneMedia[sceneIndex]) return playMediaTimeline(sceneIndex, fromStart);
+  return playSpeechTimeline(sceneIndex, fromStart);
 }
 
 function goToScene(index) {
@@ -281,4 +365,4 @@ document.querySelector('[data-intro-play]').addEventListener('click', play);
 document.querySelectorAll('[data-replay]').forEach(button => button.addEventListener('click', () => { cancelPlayback(); playTimeline(Number(button.dataset.replay)); }));
 
 render();
-window.ORHA = { goToScene, play, cancelPlayback, playTimeline, timelines, getState: () => ({ activeScene, activeFragment, activeStep, playing }) };
+window.ORHA = { goToScene, play, cancelPlayback, playTimeline, timelines, sceneMedia, getState: () => ({ activeScene, activeFragment, activeStep, playing }) };
