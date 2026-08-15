@@ -65,6 +65,12 @@
   core.src = 'app-core.js';
   core.async = false;
   core.onload = () => {
+    if (window.ORHA?.sceneMedia) {
+      window.ORHA.sceneMedia[2] = {
+        src: 'media/scene-03-kairos.mp3',
+        cues: [0, 6.70, 22.90, 31.62, 36.36, 42.50, 53.52, 61.33, 70.75, 74.09, 82.78]
+      };
+    }
     if (introPlay) introPlay.disabled = false;
     if (introStatus && !window.ORHA?.getState?.().playing) introStatus.textContent = 'KAIROS · LISTA';
   };
