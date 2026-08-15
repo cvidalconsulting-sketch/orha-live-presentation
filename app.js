@@ -98,7 +98,7 @@ function playTimeline(sceneIndex, fromStart = true) {
       playing = false;
       controls.playPause.innerHTML = '<i>↻</i><span>Repetir</span>';
       document.querySelectorAll('[data-kairos-status]').forEach(item => { item.textContent = 'PRESENTACIÓN COMPLETA'; });
-      if (sceneIndex === 1) fallbackTimer = window.setTimeout(() => goToScene(2), 1400);
+      if (sceneIndex === 1) fallbackTimer = window.setTimeout(() => goToScene(2), 120);
       return;
     }
     render();
