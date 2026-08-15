@@ -43,70 +43,61 @@
         <button class="transition-cue" data-go="1" type="button"><span>VER RESULTADOS</span><i>↘</i></button>
       </section>
 
-      <section class="scene scene-two" data-scene="1" data-step="0" aria-labelledby="scene-two-title" hidden>
-        <aside class="advisor-stage" aria-label="Kairos, asesora digital activa">
-          <div class="advisor-orbit" aria-hidden="true"></div>
-          <div class="avatar-mount" id="kairos-avatar-mount" aria-label="Espacio preparado para el avatar de ElevenLabs">
-            <div class="avatar-frame"><i></i><span>AVATAR<br />ELEVENLABS</span></div>
-            <small>VIDEO AGENT · READY</small>
-          </div>
-          <div class="advisor-status"><i></i><span>KAIROS · ANALIZANDO EN VIVO</span></div>
-          <div class="speech-stage" aria-live="polite">
-            <p class="speech is-current" data-speech="0">Sé que lo que más te preocupa es perder demasiado dinero y tardar demasiado en recuperarlo. <strong>Son las preguntas correctas.</strong></p>
-            <p class="speech" data-speech="1">El momento más difícil no llega de golpe. La caja desciende hasta encontrar su valle alrededor del <strong>mes 14.</strong></p>
-            <p class="speech" data-speech="2">Para entonces, la exposición acumulada llega a <strong>50,955 dólares.</strong> Este es el punto que debemos vigilar.</p>
-            <p class="speech" data-speech="3">De ese total, <strong>24,918 dólares ya fueron invertidos.</strong></p>
-            <p class="speech" data-speech="4">Lo que realmente está en juego hacia adelante son <strong>aproximadamente 26,000 dólares de capital nuevo en riesgo.</strong></p>
-            <p class="speech" data-speech="5">Tu capital alcanza. Quedan <strong>12,963 dólares de colchón</strong>, cerca de un 20%. Es un margen delgado.</p>
-            <p class="speech" data-speech="6">La operación comienza a producir ganancia mensual en el <strong>mes 15.</strong></p>
-            <p class="speech" data-speech="7">La recuperación completa tarda más: ocurre aproximadamente hasta el <strong>mes 43.</strong></p>
-            <p class="speech" data-speech="8"><strong>La conclusión es clara:</strong> puedes sostener el plan, pero el margen exige prudencia, control y disciplina.</p>
-          </div>
-          <div class="advisor-actions">
-            <button id="replay-analysis" type="button"><span>REPRODUCIR DE NUEVO</span><b>↻</b></button>
-            <p id="voice-status"><i></i> VOZ TEMPORAL · LISTA PARA ELEVENLABS</p>
-          </div>
-          <audio id="kairos-scene-two-audio" preload="metadata" data-provider="elevenlabs" data-voice-id="" data-audio-src=""></audio>
-        </aside>
-
-        <div class="analysis-stage">
-          <div class="scene-two-head">
-            <div><p class="kicker">RIESGO Y RECUPERACIÓN · ESCENARIO BASE</p><h2 id="scene-two-title">¿Cuánto puedo perder<br />y cuándo recupero?</h2></div>
-            <div class="step-counter"><span>ANÁLISIS EN VIVO</span><b id="step-number">01</b><i>/ 09</i></div>
-          </div>
-
-          <div class="timeline-card">
-            <div class="chart-note" data-reveal="2"><span>PUNTO DE MAYOR EXPOSICIÓN</span><strong>MES 14</strong><b>−$50,955</b></div>
-            <div class="interpretation" data-reveal="1"><span>LECTURA DE KAIROS</span><p>El riesgo es un <b>valle de caja progresivo</b>, no una pérdida instantánea.</p></div>
-            <svg class="cash-curve" viewBox="0 0 1000 300" role="img" aria-label="Curva de caja: cae hasta menos 50,955 dólares en el mes 14 y recupera la inversión en el mes 43">
-              <defs><linearGradient id="curve" x1="0" x2="1"><stop offset="0" stop-color="#e8ff91"/><stop offset=".4" stop-color="#efb88d"/><stop offset="1" stop-color="#82e8d1"/></linearGradient><linearGradient id="fill" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#efb88d" stop-opacity=".22"/><stop offset="1" stop-color="#efb88d" stop-opacity="0"/></linearGradient></defs>
-              <g class="grid-lines"><path d="M30 48H970M30 120H970M30 192H970M30 264H970"/><path d="M30 30V264M265 30V264M500 30V264M735 30V264M970 30V264"/></g>
-              <path class="curve-fill descent" data-reveal="1" d="M30 58 C130 74 220 174 304 224 L304 264 L30 264Z"/>
-              <path class="curve-line descent" data-reveal="1" pathLength="1" d="M30 58 C130 74 220 174 304 224"/>
-              <path class="curve-fill recovery" data-reveal="7" d="M304 224 C390 270 480 238 559 190 C665 125 770 82 872 58 C910 49 940 43 970 38 L970 264 L304 264Z"/>
-              <path class="curve-line recovery" data-reveal="7" pathLength="1" d="M304 224 C390 270 480 238 559 190 C665 125 770 82 872 58 C910 49 940 43 970 38"/>
-              <g data-reveal="1"><line class="marker-line risk" x1="304" y1="38" x2="304" y2="264"/><circle class="marker risk" cx="304" cy="224" r="7"/></g>
-              <g data-reveal="6"><line class="marker-line" x1="324" y1="212" x2="324" y2="264"/><circle class="marker" cx="324" cy="212" r="5"/></g>
-              <g data-reveal="7"><line class="marker-line recovered" x1="872" y1="58" x2="872" y2="264"/><circle class="marker recovered" cx="872" cy="58" r="5"/></g>
-            </svg>
-            <div class="months"><span>MES 0</span><span>MES 12</span><span>MES 24</span><span>MES 36</span><span>MES 48</span></div>
-            <div class="milestone profitable" data-reveal="6"><b>15</b><span>OPERACIÓN<br />RENTABLE</span></div>
-            <div class="milestone recovered" data-reveal="7"><b>43</b><span>INVERSIÓN<br />RECUPERADA</span></div>
-          </div>
-
-          <div class="capital-strip">
-            <article data-reveal="3"><span>YA INVERTIDO</span><strong>$24,918</strong><i style="--weight:64%"></i></article>
-            <article class="risk-capital" data-reveal="4"><span>CAPITAL NUEVO EN RIESGO</span><strong>≈ $26,000</strong><i style="--weight:67%"></i></article>
-            <article data-reveal="5"><span>COLCHÓN RESTANTE</span><strong>$12,963</strong><i style="--weight:33%"></i><small>≈ 20% · MARGEN DELGADO</small></article>
-          </div>
-          <div class="executive-close" data-reveal="8"><span>CONCLUSIÓN EJECUTIVA</span><p><b>El capital alcanza.</b><b>El margen es delgado.</b><b>La disciplina importa.</b></p></div>
+      <section class="scene scene-two audiovisual-scene" data-scene="1" aria-labelledby="scene-two-title" hidden>
+        <div class="scene-two-head">
+          <div><p class="kicker">RIESGO Y RECUPERACIÓN</p><h2 id="scene-two-title">¿Cuánto puedo perder<br />y cuándo recupero?</h2></div>
+          <div class="kairos-stage"><div class="avatar-mount" data-avatar-mount aria-label="Punto de montaje para el avatar definitivo"></div><p><b>KAIROS</b><span data-kairos-status>LISTA PARA PRESENTAR</span></p></div>
         </div>
+
+        <div class="timeline-card">
+          <div class="chart-note reveal" data-step="1"><span>PUNTO DE MAYOR EXPOSICIÓN</span><strong>MES 14</strong><b class="reveal" data-step="2">−$50,955</b></div>
+          <svg class="cash-curve" viewBox="0 0 1000 300" role="img" aria-label="Curva de caja: cae hasta menos 50,955 dólares en el mes 14 y recupera la inversión en el mes 43">
+            <defs><linearGradient id="curve" x1="0" x2="1"><stop offset="0" stop-color="#e8ff91"/><stop offset=".4" stop-color="#efb88d"/><stop offset="1" stop-color="#82e8d1"/></linearGradient><linearGradient id="fill" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#efb88d" stop-opacity=".22"/><stop offset="1" stop-color="#efb88d" stop-opacity="0"/></linearGradient></defs>
+            <g class="grid-lines"><path d="M30 48H970M30 120H970M30 192H970M30 264H970"/><path d="M30 30V264M265 30V264M500 30V264M735 30V264M970 30V264"/></g>
+            <path class="curve-fill" d="M30 58 C130 74 220 174 304 224 C390 270 480 238 559 190 C665 125 770 82 872 58 C910 49 940 43 970 38 L970 264 L30 264Z"/>
+            <path class="curve-line" pathLength="1" d="M30 58 C130 74 220 174 304 224 C390 270 480 238 559 190 C665 125 770 82 872 58 C910 49 940 43 970 38"/>
+            <line class="marker-line risk" x1="304" y1="38" x2="304" y2="264"/><circle class="marker risk" cx="304" cy="224" r="7"/>
+            <line class="marker-line" x1="324" y1="212" x2="324" y2="264"/><circle class="marker" cx="324" cy="212" r="5"/>
+            <line class="marker-line recovered" x1="872" y1="58" x2="872" y2="264"/><circle class="marker recovered" cx="872" cy="58" r="5"/>
+          </svg>
+          <div class="months"><span>MES 0</span><span>MES 12</span><span>MES 24</span><span>MES 36</span><span>MES 48</span></div>
+          <div class="milestone profitable reveal" data-step="6"><b>15</b><span>OPERACIÓN<br />RENTABLE</span></div>
+          <div class="milestone recovered reveal" data-step="7"><b>43</b><span>INVERSIÓN<br />RECUPERADA</span></div>
+        </div>
+
+        <div class="capital-strip">
+          <article class="reveal" data-step="3"><span>YA INVERTIDO</span><strong>$24,918</strong><i style="--weight: 64%"></i></article>
+          <article class="risk-capital reveal" data-step="4"><span>CAPITAL NUEVO EN RIESGO</span><strong>≈ $26,000</strong><i style="--weight: 67%"></i></article>
+          <article class="reveal" data-step="5"><span>COLCHÓN RESTANTE</span><strong>$12,963</strong><i style="--weight: 33%"></i><small>≈ 20% · MARGEN DELGADO</small></article>
+        </div>
+        <p class="scene-summary reveal" data-step="8">Tu capital alcanza. <span>Pero el margen exige disciplina.</span></p>
+        <button class="replay-scene" data-replay="1" type="button">REPRODUCIR DE NUEVO</button>
+      </section>
+
+      <section class="scene scene-three audiovisual-scene" data-scene="2" aria-labelledby="scene-three-title" hidden>
+        <header class="scene-three-head">
+          <div><p class="kicker">CERTEZAS E HIPÓTESIS</p><h2 id="scene-three-title">¿Qué es sólido<br />y qué es una apuesta?</h2></div>
+          <div class="kairos-stage"><div class="avatar-mount" data-avatar-mount aria-label="Punto de montaje para el avatar definitivo"></div><p><b>KAIROS</b><span data-kairos-status>LISTA PARA PRESENTAR</span></p></div>
+        </header>
+        <div class="evidence-stage">
+          <section class="solid-block reveal" data-step="0"><p>HECHOS / SÓLIDO</p><div class="solid-list">
+            <span class="reveal" data-step="1">PRECIOS</span><span class="reveal" data-step="1">COSTOS TECNOLÓGICOS</span><span class="reveal" data-step="1">INFRAESTRUCTURA</span><span class="reveal" data-step="1">CAPITAL</span><span class="reveal" data-step="1">MATEMÁTICA FINANCIERA</span>
+          </div></section>
+          <section class="variables-block reveal" data-step="2"><p>VARIABLES POR DEMOSTRAR</p>
+            <div class="metric-flow"><article class="metric reveal" data-step="3"><span>TRIAL → PAID</span><strong>≈ 5%</strong></article><article class="metric reveal" data-step="4"><span>CPI</span><strong>≈ $0.90</strong></article><article class="metric cac reveal" data-step="5"><small>PUBLICIDAD + AGENCIA</small><span>CAC REAL</span><strong>≈ $44.60</strong></article><article class="metric ltv reveal" data-step="6"><span>LTV</span><strong>≈ $94</strong></article></div>
+          </section>
+          <div class="comparison reveal" data-step="7"><div><span>VALOR DEL CLIENTE</span><strong>$94</strong></div><i>÷</i><div><span>COSTO DE ADQUISICIÓN</span><strong>$44.60</strong></div><b>LTV / CAC<br /><em>≈ 2.1 : 1</em></b></div>
+          <div class="verdict positive reveal" data-step="8">EL MODELO PUEDE FUNCIONAR</div>
+          <div class="verdict tight reveal" data-step="9">VIABLE,<br /><strong>PERO AJUSTADO.</strong></div>
+          <div class="day-one reveal" data-step="10">ESTAS VARIABLES<br /><strong>DEBEN MEDIRSE</strong><br />DESDE EL DÍA 1.</div>
+        </div>
+        <button class="replay-scene" data-replay="2" type="button">REPRODUCIR DE NUEVO</button>
       </section>
 
       <nav class="controls" aria-label="Controles de presentación">
         <div><button id="previous" type="button" aria-label="Escena anterior">←</button><button id="play-pause" type="button"><i>▶</i><span>Reproducir</span></button><button id="next" type="button" aria-label="Siguiente escena">→</button></div>
         <div class="scene-progress"><span id="progress"></span></div>
-        <p><b id="scene-number">01</b> / 02</p>
+        <p><b id="scene-number">01</b> / 03</p>
       </nav>
     </main>
     <script src="app.js"></script>
