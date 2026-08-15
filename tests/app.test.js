@@ -27,6 +27,7 @@ const document = {
   querySelector: selector => elements[selector]
 };
 let timeoutCallback;
+let timeoutDelay;
 const spoken = [];
 class Utterance { constructor(text) { this.text = text; } }
 const sandbox = {
@@ -34,7 +35,7 @@ const sandbox = {
   window: {
     SpeechSynthesisUtterance: Utterance,
     speechSynthesis: { speak: utterance => spoken.push(utterance), cancel: () => {} },
-    setTimeout: callback => { timeoutCallback = callback; return 1; }, clearTimeout: () => {}
+    setTimeout: (callback, delay) => { timeoutCallback = callback; timeoutDelay = delay; return 1; }, clearTimeout: () => {}
   }
 };
 
@@ -52,6 +53,7 @@ for (let i = 0; i < 8; i += 1) spoken.at(-1).onend();
 assert.equal(sandbox.window.ORHA.getState().activeStep, 8);
 assert.match(spoken.at(-1).text, /margen exige disciplina/);
 spoken.at(-1).onend();
+assert.ok(timeoutDelay < 250, 'La transición de la escena 2 a la 3 debe ser imperceptible');
 timeoutCallback();
 assert.equal(sandbox.window.ORHA.getState().activeScene, 2, 'La escena 2 continúa automáticamente a la 3');
 assert.equal(sandbox.window.ORHA.getState().activeStep, 0);
