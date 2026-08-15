@@ -32,6 +32,33 @@ const timelines = {
     'Que el modelo puede funcionar.',
     'Pero todavía no tiene suficiente margen como para permitir errores importantes en conversión, publicidad o retención.',
     'Por eso estas variables no deben tratarse como hechos. Deben medirse desde el primer día.'
+  ],
+  3: [
+    'Ahora quiero mostrarte por qué la conversión es probablemente la variable más importante de todo este modelo.',
+    'Una diferencia de apenas uno o dos puntos porcentuales cambia radicalmente el resultado.',
+    'Primero veamos un escenario cauteloso.',
+    'Si la conversión se queda alrededor del 4%, ORHA todavía puede llegar a ser rentable operativamente, aproximadamente en el mes 22.',
+    'Pero el problema es el capital.',
+    'La necesidad acumulada de caja podría subir a un rango cercano a 58 mil o incluso 63 mil dólares.',
+    'Eso consumiría prácticamente todo el capital disponible y podría llevar la recuperación total más allá de los 48 meses.',
+    'En otras palabras: el negocio podría sobrevivir, pero financieramente sería un escenario muy exigente.',
+    'Ahora veamos el escenario base.',
+    'Con una conversión cercana al 5%, la operación se vuelve rentable alrededor del mes 15.',
+    'La máxima exposición acumulada es de aproximadamente 50 mil 955 dólares.',
+    'La inversión completa se recupera cerca del mes 43.',
+    'Y al finalizar los 48 meses, el resultado operativo acumulado generado es de aproximadamente 41 mil 593 dólares.',
+    'Este es el escenario sobre el cual está construido actualmente el plan.',
+    'Ahora veamos qué ocurre si la conversión mejora solamente un punto más.',
+    'Con aproximadamente 6%, la operación entra en rentabilidad antes.',
+    'La necesidad máxima de capital disminuye.',
+    'La recuperación ocurre más rápido.',
+    'Y el beneficio acumulado proyectado al final del período puede acercarse a 96 mil 500 dólares.',
+    'Ese es el dato importante.',
+    'Estamos hablando de una diferencia entre 4%, 5% y 6%.',
+    'Solo dos puntos porcentuales.',
+    'Pero financieramente es la diferencia entre consumir prácticamente todo el capital disponible y construir un negocio saludable.',
+    'Por eso la conversión no es una métrica secundaria.',
+    'Es una de las variables que decidirán el resultado de ORHA.'
   ]
 };
 
@@ -54,7 +81,10 @@ function render() {
     const active = index === activeScene;
     scene.hidden = !active;
     scene.classList.toggle('is-active', active);
-    scene.querySelectorAll?.('[data-step]').forEach(item => item.classList.toggle('is-revealed', active && Number(item.dataset.step) <= activeStep));
+    scene.querySelectorAll?.('[data-step]').forEach(item => {
+      const withinRange = item.dataset.until === undefined || activeStep <= Number(item.dataset.until);
+      item.classList.toggle('is-revealed', active && Number(item.dataset.step) <= activeStep && withinRange);
+    });
   });
   fragments.forEach((fragment, index) => fragment.classList.toggle('is-visible', index <= activeFragment));
   controls.number.textContent = String(activeScene + 1).padStart(2, '0');
