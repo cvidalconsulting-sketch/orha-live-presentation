@@ -1,27 +1,43 @@
 const scenes = [...document.querySelectorAll('[data-scene]')];
 const fragments = [...document.querySelectorAll('.fragment')];
+const timelines = {
+  1: [
+    'Vamos a empezar por las dos preguntas que importan: cuánto capital puede quedar expuesto y cuándo se recupera.',
+    'El punto de mayor exposición ocurre en el mes 14.',
+    'En ese momento, la caja acumulada llega a menos 50 mil 955 dólares.',
+    'De ese total, 24 mil 918 dólares ya fueron invertidos.',
+    'Eso significa que aproximadamente 26 mil dólares de capital nuevo quedan en riesgo.',
+    'Después de cubrir esa exposición, todavía quedarían 12 mil 963 dólares de colchón.',
+    'En el mes 15, la operación mensual se vuelve rentable.',
+    'Y en el mes 43, la inversión completa queda recuperada.',
+    'La conclusión es clara: tu capital alcanza, pero el margen exige disciplina.'
+  ],
+  2: [
+    'Ahora quiero separar dos cosas: lo que sabemos y lo que todavía estamos suponiendo.',
+    'Hay componentes bastante sólidos: los precios definidos, los costos tecnológicos, la infraestructura disponible, el capital con el que cuentas y, por supuesto, la aritmética del modelo. El problema no está ahí.',
+    'La principal variable que todavía tenemos que demostrar es cuántas personas que prueban ORHA realmente terminarán pagando.',
+    'El escenario base supone una conversión cercana al 5%.',
+    'También estamos trabajando con un costo por instalación cercano a 90 centavos.',
+    'Pero cuando incorporamos el gasto publicitario y el costo de agencia, adquirir un cliente puede terminar costando aproximadamente 44 dólares con 60 centavos.',
+    'Frente a eso, el valor estimado de un cliente durante su permanencia es de aproximadamente 94 dólares.',
+    'Eso nos deja una relación entre valor del cliente y costo de adquisición cercana a 2.1 a 1. ¿Qué significa?',
+    'Que el modelo puede funcionar.',
+    'Pero todavía no tiene suficiente margen como para permitir errores importantes en conversión, publicidad o retención.',
+    'Por eso estas variables no deben tratarse como hechos. Deben medirse desde el primer día.'
+  ]
+};
+
 let activeScene = 0;
 let activeFragment = 0;
-let activeStep = 0;
-let timer = null;
-let analysisTimer = null;
-
-const sceneTwoCues = [
-  { at: 0, speech: 0 }, { at: 5.2, speech: 1 }, { at: 10.2, speech: 2 },
-  { at: 14.8, speech: 3 }, { at: 18.2, speech: 4 }, { at: 22.6, speech: 5 },
-  { at: 27.4, speech: 6 }, { at: 31.2, speech: 7 }, { at: 36.2, speech: 8 },
-];
+let activeStep = -1;
+let playing = false;
+let playbackId = 0;
+let fallbackTimer = null;
 
 const controls = {
-  previous: document.querySelector('#previous'),
-  next: document.querySelector('#next'),
-  playPause: document.querySelector('#play-pause'),
-  progress: document.querySelector('#progress'),
-  number: document.querySelector('#scene-number'),
-  stepNumber: document.querySelector('#step-number'),
-  replayAnalysis: document.querySelector('#replay-analysis'),
-  voiceStatus: document.querySelector('#voice-status'),
-  sceneTwoAudio: document.querySelector('#kairos-scene-two-audio'),
+  previous: document.querySelector('#previous'), next: document.querySelector('#next'),
+  playPause: document.querySelector('#play-pause'), progress: document.querySelector('#progress'),
+  number: document.querySelector('#scene-number')
 };
 
 function render() {
@@ -29,125 +45,97 @@ function render() {
     const active = index === activeScene;
     scene.hidden = !active;
     scene.classList.toggle('is-active', active);
+    scene.querySelectorAll?.('[data-step]').forEach(item => item.classList.toggle('is-revealed', active && Number(item.dataset.step) <= activeStep));
   });
   fragments.forEach((fragment, index) => fragment.classList.toggle('is-visible', index <= activeFragment));
   controls.number.textContent = String(activeScene + 1).padStart(2, '0');
-  controls.progress.style.width = `${(activeScene + 1) * 50}%`;
+  controls.progress.style.width = `${((activeScene + 1) / scenes.length) * 100}%`;
   controls.previous.disabled = activeScene === 0;
   controls.next.disabled = activeScene === scenes.length - 1;
-  scenes[1].dataset.step = String(activeStep);
-  controls.stepNumber.textContent = String(activeStep + 1).padStart(2, '0');
-  document.querySelectorAll('[data-speech]').forEach(speech => speech.classList.toggle('is-current', Number(speech.dataset.speech) === activeStep));
-  document.querySelectorAll('[data-reveal]').forEach(element => element.classList.toggle('is-revealed', Number(element.dataset.reveal) <= activeStep));
-  controls.replayAnalysis.classList.toggle('is-playing', Boolean(analysisTimer) || !controls.sceneTwoAudio.paused);
+}
+
+function cancelPlayback(label = 'Reproducir') {
+  playbackId += 1;
+  playing = false;
+  window.clearTimeout(fallbackTimer);
+  window.speechSynthesis?.cancel();
+  controls.playPause.innerHTML = `<i>▶</i><span>${label}</span>`;
+  document.querySelectorAll('[data-kairos-status]').forEach(item => { item.textContent = 'LISTA PARA PRESENTAR'; });
+}
+
+function speak(text, done, id) {
+  let finished = false;
+  const finish = () => {
+    if (finished || id !== playbackId) return;
+    finished = true;
+    window.clearTimeout(fallbackTimer);
+    done();
+  };
+  if (window.speechSynthesis && window.SpeechSynthesisUtterance) {
+    const utterance = new window.SpeechSynthesisUtterance(text);
+    utterance.lang = 'es-MX'; utterance.rate = 0.96; utterance.pitch = 1;
+    utterance.onend = finish; utterance.onerror = finish;
+    window.speechSynthesis.speak(utterance);
+    fallbackTimer = window.setTimeout(finish, Math.max(3500, text.length * 75));
+  } else {
+    fallbackTimer = window.setTimeout(finish, Math.max(1200, text.length * 28));
+  }
+}
+
+function playTimeline(sceneIndex, fromStart = true) {
+  cancelPlayback();
+  activeStep = fromStart ? -1 : activeStep;
+  const id = playbackId;
+  const lines = timelines[sceneIndex];
+  playing = true;
+  controls.playPause.innerHTML = '<i>Ⅱ</i><span>Pausar</span>';
+  document.querySelectorAll('[data-kairos-status]').forEach(item => { item.textContent = 'HABLANDO AHORA'; });
+  render();
+  const nextLine = () => {
+    if (id !== playbackId || activeScene !== sceneIndex) return;
+    activeStep += 1;
+    if (activeStep >= lines.length) {
+      playing = false;
+      controls.playPause.innerHTML = '<i>↻</i><span>Repetir</span>';
+      document.querySelectorAll('[data-kairos-status]').forEach(item => { item.textContent = 'PRESENTACIÓN COMPLETA'; });
+      if (sceneIndex === 1) fallbackTimer = window.setTimeout(() => goToScene(2), 1400);
+      return;
+    }
+    render();
+    speak(lines[activeStep], nextLine, id);
+  };
+  nextLine();
 }
 
 function goToScene(index) {
+  cancelPlayback();
   activeScene = Math.max(0, Math.min(index, scenes.length - 1));
-  if (activeScene === 0) { activeFragment = fragments.length - 1; stopSceneTwo(); }
-  if (activeScene === 1) activeStep = 0;
+  activeStep = -1;
+  if (activeScene === 0) activeFragment = fragments.length - 1;
   render();
-  if (activeScene === 1) playSceneTwo();
-}
-
-function advanceAnalysis() {
-  if (activeStep < sceneTwoCues.length - 1) activeStep += 1;
-  render();
-}
-
-function stopSceneTwo() {
-  window.clearInterval(analysisTimer);
-  analysisTimer = null;
-  if (window.speechSynthesis) window.speechSynthesis.cancel();
-  if (controls.sceneTwoAudio.pause) controls.sceneTwoAudio.pause();
-}
-
-function finishSceneTwo() {
-  analysisTimer = null;
-  controls.voiceStatus.innerHTML = '<i></i> ANÁLISIS COMPLETO';
-  render();
-}
-
-function playTemporaryVoice(cueIndex = 0) {
-  activeStep = cueIndex;
-  render();
-  if (window.speechSynthesis && window.SpeechSynthesisUtterance) {
-    const speech = document.querySelector(`[data-speech="${cueIndex}"]`).textContent;
-    const utterance = new window.SpeechSynthesisUtterance(speech);
-    utterance.lang = 'es-MX';
-    utterance.rate = 0.94;
-    utterance.onend = () => cueIndex < sceneTwoCues.length - 1 ? playTemporaryVoice(cueIndex + 1) : finishSceneTwo();
-    window.speechSynthesis.speak(utterance);
-    return;
-  }
-  analysisTimer = window.setInterval(() => {
-    if (activeStep < sceneTwoCues.length - 1) advanceAnalysis();
-    else { window.clearInterval(analysisTimer); finishSceneTwo(); }
-  }, 3600);
-}
-
-function syncAudioTimeline() {
-  const elapsed = controls.sceneTwoAudio.currentTime;
-  const cue = sceneTwoCues.findLastIndex(item => elapsed >= item.at);
-  if (cue >= 0 && cue !== activeStep) { activeStep = cue; render(); }
-}
-
-function configureSceneTwoAudio({ src, voiceId = '' }) {
-  controls.sceneTwoAudio.dataset.audioSrc = src;
-  controls.sceneTwoAudio.dataset.voiceId = voiceId;
-}
-
-function playSceneTwo() {
-  stopSceneTwo();
-  activeStep = 0;
-  controls.voiceStatus.innerHTML = '<i></i> KAIROS · HABLANDO';
-  const source = controls.sceneTwoAudio.dataset.audioSrc;
-  if (source && controls.sceneTwoAudio.play) {
-    controls.sceneTwoAudio.src = source;
-    controls.sceneTwoAudio.currentTime = 0;
-    controls.sceneTwoAudio.play().catch(() => playTemporaryVoice());
-  } else {
-    playTemporaryVoice();
-  }
-}
-
-function stopPlayback(label = 'Reproducir') {
-  window.clearInterval(timer);
-  timer = null;
-  controls.playPause.innerHTML = `<i>▶</i><span>${label}</span>`;
+  if (timelines[activeScene]) playTimeline(activeScene);
 }
 
 function play() {
-  if (activeScene === 1 || activeFragment === fragments.length - 1) {
-    activeScene = 0;
-    activeFragment = 0;
-    render();
-  }
+  if (playing) return cancelPlayback();
+  if (timelines[activeScene]) return playTimeline(activeScene);
+  activeFragment = 0;
+  const id = playbackId;
+  playing = true;
   controls.playPause.innerHTML = '<i>Ⅱ</i><span>Pausar</span>';
-  timer = window.setInterval(() => {
-    if (activeScene === 0 && activeFragment < fragments.length - 1) {
-      activeFragment += 1;
-      render();
-    } else if (activeScene === 0) {
-      activeScene = 1;
-      activeStep = 0;
-      render();
-      window.clearInterval(timer);
-      timer = null;
-      playSceneTwo();
-    } else {
-      stopPlayback('Repetir');
-    }
-  }, 2600);
+  const advance = () => {
+    if (id !== playbackId) return;
+    if (activeFragment < fragments.length - 1) { activeFragment += 1; render(); fallbackTimer = window.setTimeout(advance, 2600); }
+    else goToScene(1);
+  };
+  fallbackTimer = window.setTimeout(advance, 2600);
 }
 
 controls.previous.addEventListener('click', () => goToScene(activeScene - 1));
 controls.next.addEventListener('click', () => goToScene(activeScene + 1));
-controls.playPause.addEventListener('click', () => timer ? stopPlayback() : play());
+controls.playPause.addEventListener('click', play);
 document.querySelector('[data-go="1"]').addEventListener('click', () => goToScene(1));
-controls.replayAnalysis.addEventListener('click', playSceneTwo);
-controls.sceneTwoAudio.addEventListener('timeupdate', syncAudioTimeline);
-controls.sceneTwoAudio.addEventListener('ended', finishSceneTwo);
+document.querySelectorAll('[data-replay]').forEach(button => button.addEventListener('click', () => playTimeline(Number(button.dataset.replay))));
 
 render();
-window.ORHA = { configureSceneTwoAudio, goToScene, play, stopPlayback, playSceneTwo, getState: () => ({ activeScene, activeFragment, activeStep, playing: Boolean(timer || analysisTimer) }) };
+window.ORHA = { goToScene, play, cancelPlayback, playTimeline, timelines, getState: () => ({ activeScene, activeFragment, activeStep, playing }) };
