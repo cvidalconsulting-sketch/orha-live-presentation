@@ -13,12 +13,13 @@ class Element {
   querySelectorAll(selector) { return selector === '[data-step]' ? this.steps : []; }
 }
 
-const scenes = [new Element(), new Element(), new Element(), new Element()];
+const scenes = [new Element(), new Element(), new Element(), new Element(), new Element()];
 scenes[1].steps = Array.from({ length: 9 }, (_, step) => new Element({ step: String(step) }));
 scenes[2].steps = Array.from({ length: 11 }, (_, step) => new Element({ step: String(step) }));
 scenes[3].steps = Array.from({ length: 25 }, (_, step) => new Element({ step: String(step) }));
+scenes[4].steps = Array.from({ length: 12 }, (_, step) => new Element({ step: String(step) }));
 const fragments = Array.from({ length: 5 }, () => new Element());
-const replay = [new Element({ replay: '1' }), new Element({ replay: '2' }), new Element({ replay: '3' })];
+const replay = [new Element({ replay: '1' }), new Element({ replay: '2' }), new Element({ replay: '3' }), new Element({ replay: '4' })];
 const statuses = [new Element(), new Element()];
 const elements = Object.fromEntries(['previous', 'next', 'play-pause', 'progress', 'scene-number'].map(id => [`#${id}`, new Element()]));
 elements['[data-go="1"]'] = new Element();
@@ -95,15 +96,43 @@ assert.equal(sandbox.window.ORHA.getState().activeStep, 0);
 for (let i = 0; i < 24; i += 1) { spoken.at(-1).onend(); spoken.at(-1).onstart(); }
 assert.equal(sandbox.window.ORHA.getState().activeStep, 24);
 assert.match(spoken.at(-1).text, /resultado de ORHA/);
+spoken.at(-1).onend();
+assert.equal(sandbox.window.ORHA.getState().activeScene, 3, 'La escena 4 espera el onend de la última frase');
+timeoutCallback();
+assert.equal(sandbox.window.ORHA.getState().activeScene, 4, 'La escena 4 continúa automáticamente a la 5');
+assert.equal(elements['#scene-number'].textContent, '05');
+assert.equal(scenes.length, 5);
+assert.match(spoken.at(-1).text, /parte más importante/);
+spoken.at(-1).onstart();
+assert.equal(sandbox.window.ORHA.getState().activeStep, 0, 'onstart revela el primer paso de la escena 5');
+for (let i = 0; i < 11; i += 1) { spoken.at(-1).onend(); spoken.at(-1).onstart(); }
+assert.equal(sandbox.window.ORHA.getState().activeStep, 11);
+assert.equal(spoken.at(-1).text, 'Evidencia antes de liberar más capital.');
+spoken.at(-1).onend();
+assert.equal(sandbox.window.ORHA.getState().activeScene, 4, 'La escena 5 termina sin navegar a una escena inexistente');
+assert.equal(sandbox.window.ORHA.getState().playing, false);
+replay[3].click();
+assert.match(spoken.at(-1).text, /parte más importante/, 'La escena 5 puede reproducirse nuevamente');
 
 const html = fs.readFileSync('index.html', 'utf8');
 const js = fs.readFileSync('app.js', 'utf8');
-assert.match(fs.readFileSync('styles.css', 'utf8'), /\.scene\[hidden\]\s*\{\s*display:none !important/);
+const css = fs.readFileSync('styles.css', 'utf8');
+assert.match(css, /\.scene\[hidden\]\s*\{\s*display:none !important/);
 for (const expected of ['≈ 5%', '≈ $0.90', '≈ $44.60', '≈ $94', '≈ 2.1 : 1', 'VIABLE,', 'PERO AJUSTADO.', 'DESDE EL DÍA 1.']) assert.ok(html.includes(expected), expected);
 for (const expected of ['≈ MES 22', '≈ $58K – $63K', '&gt; 48 MESES', 'MES 15', '$50,955', 'MES 43', 'RESULTADO OPERATIVO ACUMULADO GENERADO · 48 MESES', '≈ $41,593', '≈ $96,500', '2 PUNTOS PORCENTUALES']) assert.ok(html.includes(expected), expected);
 assert.ok(!html.includes('≈ MES 19–20'));
 assert.equal((html.match(/scenario-curve/g) || []).length, 3);
 assert.match(js, /SpeechSynthesisUtterance/);
 assert.match(js, /Ahora quiero separar dos cosas/);
-assert.doesNotMatch(html, /data-scene="4"|ESCENA 5/);
-console.log('Navegación 1 → 2 → 3 → 4, voz y progresión audiovisual verificadas.');
+assert.match(js, /No comprometería los 39 mil dólares líquidos de una sola vez/);
+assert.equal((html.match(/data-scene="[0-4]"/g) || []).length, 5);
+for (const expected of ['$39,000', 'CAPITAL', 'EVIDENCIA', 'CONVERSIÓN', 'CAC', 'RETENCIÓN', 'CHURN', 'MEJOR QUE EL MODELO', 'ACELERAR', 'CERCA DEL MODELO', 'CONTINUAR', 'PEOR QUE EL MODELO', 'AJUSTAR / DETENER', '= TIEMPO PARA APRENDER', 'NO INVERTIR MENOS.', 'INVERTIR', 'CON CONTROL.', 'ANTES DE LIBERAR', 'MÁS CAPITAL.']) assert.ok(html.includes(expected), expected);
+assert.match(html, /CAPITAL<\/strong><i>→<\/i><strong>EVIDENCIA/);
+assert.doesNotMatch(html, /data-scene="5"|ESCENA 6/);
+assert.equal((html.match(/id="scene-number"/g) || []).length, 1, 'Debe existir un único ID scene-number');
+assert.match(html, /id="scene-number">01<\/b> \/ 05/);
+assert.doesNotMatch(html, /\/ 04/);
+assert.match(css, /\.evidence-variables span\{[^}]*opacity:0;[^}]*transform:translateY\(10px\);[^}]*transition:opacity \.4s ease,transform \.4s ease/);
+assert.match(css, /\.evidence-variables\.is-revealed span\{[^}]*opacity:1;[^}]*transform:none/);
+for (const [child, delay] of [['1', '0s'], ['2', '.12s'], ['3', '.24s'], ['4', '.36s']]) assert.match(css, new RegExp(`\\.evidence-variables\\.is-revealed span:nth-child\\(${child}\\)\\{transition-delay:${delay.replace('.', '\\.')}`));
+console.log('Navegación 1 → 2 → 3 → 4 → 5, voz y progresión audiovisual verificadas.');
