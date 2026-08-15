@@ -1,6 +1,14 @@
 const scenes = [...document.querySelectorAll('[data-scene]')];
 const fragments = [...document.querySelectorAll('.fragment')];
 const timelines = {
+  0: [
+    'Hola, Thelma. Soy Kairos.',
+    'Charly me pidió que te compartiera los resultados del análisis financiero de ORHA.',
+    'También me pidió que te dijera que, si le hicieras caso, probablemente te iría mejor en todo. Pero como, según él, casi siempre lo ignoras, decidió que fuera yo quien te presentara los resultados. Tal vez así sí sigues el consejo.',
+    'No podría decirte si está hablando en serio o no, o si muy probablemente está siendo sarcástico. Eso se los dejo a ustedes dos.',
+    'Yo, por mi parte, voy a concentrarme en lo que sí puedo demostrar: lo que tus números dicen de verdad.',
+    'Estos son los resultados.'
+  ],
   1: [
     'Vamos a empezar por las dos preguntas que importan: cuánto capital puede quedar expuesto y cuándo se recupera.',
     'El punto de mayor exposición ocurre en el mes 14.',
@@ -33,6 +41,7 @@ let activeStep = -1;
 let playing = false;
 let playbackId = 0;
 let fallbackTimer = null;
+let activeUtterance = null;
 
 const controls = {
   previous: document.querySelector('#previous'), next: document.querySelector('#next'),
@@ -58,51 +67,65 @@ function cancelPlayback(label = 'Reproducir') {
   playbackId += 1;
   playing = false;
   window.clearTimeout(fallbackTimer);
-  window.speechSynthesis?.cancel();
+  if (activeUtterance || window.speechSynthesis?.speaking) window.speechSynthesis.cancel();
+  activeUtterance = null;
   controls.playPause.innerHTML = `<i>▶</i><span>${label}</span>`;
   document.querySelectorAll('[data-kairos-status]').forEach(item => { item.textContent = 'LISTA PARA PRESENTAR'; });
+  document.querySelector('[data-intro-status]').textContent = 'KAIROS · LISTA';
 }
 
-function speak(text, done, id) {
+function speak(text, started, done, id) {
   let finished = false;
   const finish = () => {
     if (finished || id !== playbackId) return;
     finished = true;
-    window.clearTimeout(fallbackTimer);
+    activeUtterance = null;
     done();
   };
   if (window.speechSynthesis && window.SpeechSynthesisUtterance) {
     const utterance = new window.SpeechSynthesisUtterance(text);
     utterance.lang = 'es-MX'; utterance.rate = 0.96; utterance.pitch = 1;
-    utterance.onend = finish; utterance.onerror = finish;
+    utterance.onstart = () => { if (!finished && id === playbackId) started(); };
+    utterance.onend = finish;
+    utterance.onerror = () => {
+      if (finished || id !== playbackId) return;
+      activeUtterance = null;
+      started();
+      fallbackTimer = window.setTimeout(finish, Math.max(1200, text.length * 28));
+    };
+    activeUtterance = utterance;
     window.speechSynthesis.speak(utterance);
-    fallbackTimer = window.setTimeout(finish, Math.max(3500, text.length * 75));
   } else {
+    started();
     fallbackTimer = window.setTimeout(finish, Math.max(1200, text.length * 28));
   }
 }
 
 function playTimeline(sceneIndex, fromStart = true) {
-  cancelPlayback();
   activeStep = fromStart ? -1 : activeStep;
   const id = playbackId;
   const lines = timelines[sceneIndex];
+  let lineIndex = 0;
   playing = true;
   controls.playPause.innerHTML = '<i>Ⅱ</i><span>Pausar</span>';
   document.querySelectorAll('[data-kairos-status]').forEach(item => { item.textContent = 'HABLANDO AHORA'; });
+  document.querySelector('[data-intro-status]').textContent = 'KAIROS · HABLANDO';
   render();
   const nextLine = () => {
     if (id !== playbackId || activeScene !== sceneIndex) return;
-    activeStep += 1;
-    if (activeStep >= lines.length) {
+    if (lineIndex >= lines.length) {
       playing = false;
       controls.playPause.innerHTML = '<i>↻</i><span>Repetir</span>';
       document.querySelectorAll('[data-kairos-status]').forEach(item => { item.textContent = 'PRESENTACIÓN COMPLETA'; });
-      if (sceneIndex === 1) fallbackTimer = window.setTimeout(() => goToScene(2), 120);
+      if (sceneIndex < scenes.length - 1) fallbackTimer = window.setTimeout(() => goToScene(sceneIndex + 1), 120);
       return;
     }
-    render();
-    speak(lines[activeStep], nextLine, id);
+    const currentStep = lineIndex;
+    speak(lines[lineIndex], () => {
+      activeStep = currentStep;
+      if (sceneIndex === 0) activeFragment = currentStep - 1;
+      render();
+    }, () => { lineIndex += 1; nextLine(); }, id);
   };
   nextLine();
 }
@@ -118,24 +141,16 @@ function goToScene(index) {
 
 function play() {
   if (playing) return cancelPlayback();
-  if (timelines[activeScene]) return playTimeline(activeScene);
   activeFragment = 0;
-  const id = playbackId;
-  playing = true;
-  controls.playPause.innerHTML = '<i>Ⅱ</i><span>Pausar</span>';
-  const advance = () => {
-    if (id !== playbackId) return;
-    if (activeFragment < fragments.length - 1) { activeFragment += 1; render(); fallbackTimer = window.setTimeout(advance, 2600); }
-    else goToScene(1);
-  };
-  fallbackTimer = window.setTimeout(advance, 2600);
+  playTimeline(activeScene);
 }
 
 controls.previous.addEventListener('click', () => goToScene(activeScene - 1));
 controls.next.addEventListener('click', () => goToScene(activeScene + 1));
 controls.playPause.addEventListener('click', play);
 document.querySelector('[data-go="1"]').addEventListener('click', () => goToScene(1));
-document.querySelectorAll('[data-replay]').forEach(button => button.addEventListener('click', () => playTimeline(Number(button.dataset.replay))));
+document.querySelector('[data-intro-play]').addEventListener('click', play);
+document.querySelectorAll('[data-replay]').forEach(button => button.addEventListener('click', () => { cancelPlayback(); playTimeline(Number(button.dataset.replay)); }));
 
 render();
 window.ORHA = { goToScene, play, cancelPlayback, playTimeline, timelines, getState: () => ({ activeScene, activeFragment, activeStep, playing }) };
