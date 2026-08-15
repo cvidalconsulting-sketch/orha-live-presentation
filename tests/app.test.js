@@ -13,13 +13,14 @@ class Element {
   querySelectorAll(selector) { return selector === '[data-step]' ? this.steps : []; }
 }
 
-const scenes = [new Element(), new Element(), new Element(), new Element(), new Element()];
+const scenes = [new Element(), new Element(), new Element(), new Element(), new Element(), new Element()];
 scenes[1].steps = Array.from({ length: 9 }, (_, step) => new Element({ step: String(step) }));
 scenes[2].steps = Array.from({ length: 11 }, (_, step) => new Element({ step: String(step) }));
 scenes[3].steps = Array.from({ length: 25 }, (_, step) => new Element({ step: String(step) }));
 scenes[4].steps = Array.from({ length: 12 }, (_, step) => new Element({ step: String(step) }));
+scenes[5].steps = Array.from({ length: 16 }, (_, step) => new Element({ step: String(step) }));
 const fragments = Array.from({ length: 5 }, () => new Element());
-const replay = [new Element({ replay: '1' }), new Element({ replay: '2' }), new Element({ replay: '3' }), new Element({ replay: '4' })];
+const replay = [new Element({ replay: '1' }), new Element({ replay: '2' }), new Element({ replay: '3' }), new Element({ replay: '4' }), new Element({ replay: '5' })];
 const statuses = [new Element(), new Element()];
 const elements = Object.fromEntries(['previous', 'next', 'play-pause', 'progress', 'scene-number'].map(id => [`#${id}`, new Element()]));
 elements['[data-go="1"]'] = new Element();
@@ -101,7 +102,7 @@ assert.equal(sandbox.window.ORHA.getState().activeScene, 3, 'La escena 4 espera 
 timeoutCallback();
 assert.equal(sandbox.window.ORHA.getState().activeScene, 4, 'La escena 4 continúa automáticamente a la 5');
 assert.equal(elements['#scene-number'].textContent, '05');
-assert.equal(scenes.length, 5);
+assert.equal(scenes.length, 6);
 assert.match(spoken.at(-1).text, /parte más importante/);
 spoken.at(-1).onstart();
 assert.equal(sandbox.window.ORHA.getState().activeStep, 0, 'onstart revela el primer paso de la escena 5');
@@ -109,10 +110,27 @@ for (let i = 0; i < 11; i += 1) { spoken.at(-1).onend(); spoken.at(-1).onstart()
 assert.equal(sandbox.window.ORHA.getState().activeStep, 11);
 assert.equal(spoken.at(-1).text, 'Evidencia antes de liberar más capital.');
 spoken.at(-1).onend();
-assert.equal(sandbox.window.ORHA.getState().activeScene, 4, 'La escena 5 termina sin navegar a una escena inexistente');
-assert.equal(sandbox.window.ORHA.getState().playing, false);
+assert.equal(sandbox.window.ORHA.getState().activeScene, 4, 'La escena 5 espera su transición después del onend final');
 replay[3].click();
 assert.match(spoken.at(-1).text, /parte más importante/, 'La escena 5 puede reproducirse nuevamente');
+spoken.at(-1).onstart();
+for (let i = 0; i < 11; i += 1) { spoken.at(-1).onend(); spoken.at(-1).onstart(); }
+spoken.at(-1).onend();
+assert.equal(sandbox.window.ORHA.getState().activeScene, 4, 'La escena 6 no inicia antes de la transición posterior al onend');
+timeoutCallback();
+assert.equal(sandbox.window.ORHA.getState().activeScene, 5, 'La escena 5 continúa automáticamente a la 6');
+assert.equal(elements['#scene-number'].textContent, '06');
+assert.match(spoken.at(-1).text, /más de una forma de construir la misma ORHA/);
+spoken.at(-1).onstart();
+assert.equal(sandbox.window.ORHA.getState().activeStep, 0, 'onstart revela el primer paso de la escena 6');
+for (let i = 0; i < 15; i += 1) { spoken.at(-1).onend(); spoken.at(-1).onstart(); }
+assert.equal(sandbox.window.ORHA.getState().activeStep, 15);
+assert.match(spoken.at(-1).text, /cuánto capital quieres arriesgar/);
+spoken.at(-1).onend();
+assert.equal(sandbox.window.ORHA.getState().activeScene, 5, 'La escena 6 termina sin navegar a una escena inexistente');
+assert.equal(sandbox.window.ORHA.getState().playing, false);
+replay[4].click();
+assert.match(spoken.at(-1).text, /más de una forma de construir la misma ORHA/, 'La escena 6 puede reproducirse nuevamente');
 
 const html = fs.readFileSync('index.html', 'utf8');
 const js = fs.readFileSync('app.js', 'utf8');
@@ -125,14 +143,18 @@ assert.equal((html.match(/scenario-curve/g) || []).length, 3);
 assert.match(js, /SpeechSynthesisUtterance/);
 assert.match(js, /Ahora quiero separar dos cosas/);
 assert.match(js, /No comprometería los 39 mil dólares líquidos de una sola vez/);
-assert.equal((html.match(/data-scene="[0-4]"/g) || []).length, 5);
+assert.equal((html.match(/data-scene="[0-5]"/g) || []).length, 6);
 for (const expected of ['$39,000', 'CAPITAL', 'EVIDENCIA', 'CONVERSIÓN', 'CAC', 'RETENCIÓN', 'CHURN', 'MEJOR QUE EL MODELO', 'ACELERAR', 'CERCA DEL MODELO', 'CONTINUAR', 'PEOR QUE EL MODELO', 'AJUSTAR / DETENER', '= TIEMPO PARA APRENDER', 'NO INVERTIR MENOS.', 'INVERTIR', 'CON CONTROL.', 'ANTES DE LIBERAR', 'MÁS CAPITAL.']) assert.ok(html.includes(expected), expected);
 assert.match(html, /CAPITAL<\/strong><i>→<\/i><strong>EVIDENCIA/);
-assert.doesNotMatch(html, /data-scene="5"|ESCENA 6/);
+assert.doesNotMatch(html, /data-scene="6"|ESCENA 7/);
 assert.equal((html.match(/id="scene-number"/g) || []).length, 1, 'Debe existir un único ID scene-number');
-assert.match(html, /id="scene-number">01<\/b> \/ 05/);
-assert.doesNotMatch(html, /\/ 04/);
+assert.match(html, /id="scene-number">01<\/b> \/ 06/);
+assert.doesNotMatch(html, /\/ 04|\/ 05/);
 assert.match(css, /\.evidence-variables span\{[^}]*opacity:0;[^}]*transform:translateY\(10px\);[^}]*transition:opacity \.4s ease,transform \.4s ease/);
 assert.match(css, /\.evidence-variables\.is-revealed span\{[^}]*opacity:1;[^}]*transform:none/);
 for (const [child, delay] of [['1', '0s'], ['2', '.12s'], ['3', '.24s'], ['4', '.36s']]) assert.match(css, new RegExp(`\\.evidence-variables\\.is-revealed span:nth-child\\(${child}\\)\\{transition-delay:${delay.replace('.', '\\.')}`));
-console.log('Navegación 1 → 2 → 3 → 4 → 5, voz y progresión audiovisual verificadas.');
+for (const expected of ['TRES CAMINOS PARA EJECUTAR ORHA', 'MISMA VISIÓN', 'MISMA CALIDAD', 'MODELO ACTUAL', '15%', '$1,500 / MES', '$2,200 / MES', '$3,700 / MES', '$39,000', '$12,963', 'MODELO OPTIMIZADO', 'ORHA DIRECT', 'CANAL SI DEMUESTRA VALOR', 'SE MANTIENE PARA APRENDER', 'DEBE DEMOSTRAR RETORNO', 'CONSTRUIR EFICIENTEMENTE', 'EVIDENCIA PRIMERO', 'CAPITAL', 'TEST', 'DATOS', 'SIGUIENTE INVERSIÓN', 'CONVERSIÓN', 'CAC', 'RETENCIÓN', 'CHURN', 'ACELERAR', 'CORREGIR ANTES DE ESCALAR', 'MAYOR COMPROMISO INICIAL', 'MAYOR EFICIENCIA DE CAPITAL', 'MAYOR FLEXIBILIDAD']) assert.ok(html.includes(expected), expected);
+assert.doesNotMatch(html, /CALIDAD (?:BAJA|MEDIA|ALTA)|BARATO|ECONÓMICO/i);
+assert.match(html, /class="path-memory-a reveal" data-step="6" data-until="10">[\s\S]*MODELO ACTUAL[\s\S]*MAYOR COMPROMISO INICIAL/);
+assert.match(css, /\.path-memory-a\{[^}]*text-align:right}\.path-memory-a\.is-revealed\{opacity:\.48}/);
+console.log('Navegación 1 → 2 → 3 → 4 → 5 → 6, voz y progresión audiovisual verificadas.');
