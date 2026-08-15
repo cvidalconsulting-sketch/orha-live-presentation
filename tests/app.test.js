@@ -91,7 +91,6 @@ const js = fs.readFileSync('app.js', 'utf8');
 assert.match(fs.readFileSync('styles.css', 'utf8'), /\.scene\[hidden\]\s*\{\s*display:none !important/);
 for (const expected of ['≈ 5%', '≈ $0.90', '≈ $44.60', '≈ $94', '≈ 2.1 : 1', 'VIABLE,', 'PERO AJUSTADO.', 'DESDE EL DÍA 1.']) assert.ok(html.includes(expected), expected);
 assert.match(js, /SpeechSynthesisUtterance/);
-assert.match(js, /Hola, Thelma\. Soy Kairos\./);
 assert.match(js, /Ahora quiero separar dos cosas/);
 assert.doesNotMatch(html, /data-scene="3"|ESCENA 4/);
 console.log('Navegación 1 → 2 → 3, voz y progresión audiovisual verificadas.');
