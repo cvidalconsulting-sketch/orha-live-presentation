@@ -39,18 +39,19 @@
           </div>
           <div class="kairos-id"><i></i><div><span>PRESENTADORA DIGITAL</span><strong>KAIROS</strong></div></div>
           <div class="signal" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span></div>
+          <button class="intro-play" data-intro-play type="button"><span>REPRODUCIR PRESENTACIÓN</span><b>▶</b><small data-intro-status>KAIROS · LISTA</small></button>
         </aside>
         <button class="transition-cue" data-go="1" type="button"><span>VER RESULTADOS</span><i>↘</i></button>
       </section>
 
-      <section class="scene scene-two" data-scene="1" aria-labelledby="scene-two-title" hidden>
+      <section class="scene scene-two audiovisual-scene" data-scene="1" aria-labelledby="scene-two-title" hidden>
         <div class="scene-two-head">
           <div><p class="kicker">RIESGO Y RECUPERACIÓN</p><h2 id="scene-two-title">¿Cuánto puedo perder<br />y cuándo recupero?</h2></div>
-          <div class="kairos-mini"><div class="mini-face"></div><p><b>KAIROS</b><span>“Son las preguntas correctas.”</span></p></div>
+          <div class="kairos-stage"><div class="avatar-mount" data-avatar-mount aria-label="Punto de montaje para el avatar definitivo"></div><p><b>KAIROS</b><span data-kairos-status>LISTA PARA PRESENTAR</span></p></div>
         </div>
 
         <div class="timeline-card">
-          <div class="chart-note"><span>PUNTO DE MAYOR EXPOSICIÓN</span><strong>MES 14</strong><b>−$50,955</b></div>
+          <div class="chart-note reveal" data-step="1"><span>PUNTO DE MAYOR EXPOSICIÓN</span><strong>MES 14</strong><b class="reveal" data-step="2">−$50,955</b></div>
           <svg class="cash-curve" viewBox="0 0 1000 300" role="img" aria-label="Curva de caja: cae hasta menos 50,955 dólares en el mes 14 y recupera la inversión en el mes 43">
             <defs><linearGradient id="curve" x1="0" x2="1"><stop offset="0" stop-color="#e8ff91"/><stop offset=".4" stop-color="#efb88d"/><stop offset="1" stop-color="#82e8d1"/></linearGradient><linearGradient id="fill" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#efb88d" stop-opacity=".22"/><stop offset="1" stop-color="#efb88d" stop-opacity="0"/></linearGradient></defs>
             <g class="grid-lines"><path d="M30 48H970M30 120H970M30 192H970M30 264H970"/><path d="M30 30V264M265 30V264M500 30V264M735 30V264M970 30V264"/></g>
@@ -61,22 +62,131 @@
             <line class="marker-line recovered" x1="872" y1="58" x2="872" y2="264"/><circle class="marker recovered" cx="872" cy="58" r="5"/>
           </svg>
           <div class="months"><span>MES 0</span><span>MES 12</span><span>MES 24</span><span>MES 36</span><span>MES 48</span></div>
-          <div class="milestone profitable"><b>15</b><span>OPERACIÓN<br />RENTABLE</span></div>
-          <div class="milestone recovered"><b>43</b><span>INVERSIÓN<br />RECUPERADA</span></div>
+          <div class="milestone profitable reveal" data-step="6"><b>15</b><span>OPERACIÓN<br />RENTABLE</span></div>
+          <div class="milestone recovered reveal" data-step="7"><b>43</b><span>INVERSIÓN<br />RECUPERADA</span></div>
         </div>
 
         <div class="capital-strip">
-          <article><span>YA INVERTIDO</span><strong>$24,918</strong><i style="--weight: 64%"></i></article>
-          <article class="risk-capital"><span>CAPITAL NUEVO EN RIESGO</span><strong>≈ $26,000</strong><i style="--weight: 67%"></i></article>
-          <article><span>COLCHÓN RESTANTE</span><strong>$12,963</strong><i style="--weight: 33%"></i><small>≈ 20% · MARGEN DELGADO</small></article>
+          <article class="reveal" data-step="3"><span>YA INVERTIDO</span><strong>$24,918</strong><i style="--weight: 64%"></i></article>
+          <article class="risk-capital reveal" data-step="4"><span>CAPITAL NUEVO EN RIESGO</span><strong>≈ $26,000</strong><i style="--weight: 67%"></i></article>
+          <article class="reveal" data-step="5"><span>COLCHÓN RESTANTE</span><strong>$12,963</strong><i style="--weight: 33%"></i><small>≈ 20% · MARGEN DELGADO</small></article>
         </div>
-        <p class="scene-summary">Tu capital alcanza. <span>Pero el margen exige disciplina.</span></p>
+        <p class="scene-summary reveal" data-step="8">Tu capital alcanza. <span>Pero el margen exige disciplina.</span></p>
+        <button class="replay-scene" data-replay="1" type="button">REPRODUCIR DE NUEVO</button>
+      </section>
+
+      <section class="scene scene-three audiovisual-scene" data-scene="2" aria-labelledby="scene-three-title" hidden>
+        <header class="scene-three-head">
+          <div><p class="kicker">CERTEZAS E HIPÓTESIS</p><h2 id="scene-three-title">¿Qué es sólido<br />y qué es una apuesta?</h2></div>
+          <div class="kairos-stage"><div class="avatar-mount" data-avatar-mount aria-label="Punto de montaje para el avatar definitivo"></div><p><b>KAIROS</b><span data-kairos-status>LISTA PARA PRESENTAR</span></p></div>
+        </header>
+        <div class="evidence-stage">
+          <section class="solid-block reveal" data-step="0"><p>HECHOS / SÓLIDO</p><div class="solid-list">
+            <span class="reveal" data-step="1">PRECIOS</span><span class="reveal" data-step="1">COSTOS TECNOLÓGICOS</span><span class="reveal" data-step="1">INFRAESTRUCTURA</span><span class="reveal" data-step="1">CAPITAL</span><span class="reveal" data-step="1">MATEMÁTICA FINANCIERA</span>
+          </div></section>
+          <section class="variables-block reveal" data-step="2"><p>VARIABLES POR DEMOSTRAR</p>
+            <div class="metric-flow"><article class="metric reveal" data-step="3"><span>TRIAL → PAID</span><strong>≈ 5%</strong></article><article class="metric reveal" data-step="4"><span>CPI</span><strong>≈ $0.90</strong></article><article class="metric cac reveal" data-step="5"><small>PUBLICIDAD + AGENCIA</small><span>CAC REAL</span><strong>≈ $44.60</strong></article><article class="metric ltv reveal" data-step="6"><span>LTV</span><strong>≈ $94</strong></article></div>
+          </section>
+          <div class="comparison reveal" data-step="7"><div><span>VALOR DEL CLIENTE</span><strong>$94</strong></div><i>÷</i><div><span>COSTO DE ADQUISICIÓN</span><strong>$44.60</strong></div><b>LTV / CAC<br /><em>≈ 2.1 : 1</em></b></div>
+          <div class="verdict positive reveal" data-step="8">EL MODELO PUEDE FUNCIONAR</div>
+          <div class="verdict tight reveal" data-step="9">VIABLE,<br /><strong>PERO AJUSTADO.</strong></div>
+          <div class="day-one reveal" data-step="10">ESTAS VARIABLES<br /><strong>DEBEN MEDIRSE</strong><br />DESDE EL DÍA 1.</div>
+        </div>
+        <button class="replay-scene" data-replay="2" type="button">REPRODUCIR DE NUEVO</button>
+      </section>
+
+      <section class="scene scene-four audiovisual-scene" data-scene="3" aria-labelledby="scene-four-title" hidden>
+        <header class="scene-four-head">
+          <div><p class="kicker">SENSIBILIDAD DE CONVERSIÓN</p><h2 id="scene-four-title">Tres futuros posibles<br />para ORHA.</h2></div>
+          <div class="kairos-stage"><div class="avatar-mount" data-avatar-mount aria-label="Punto de montaje para el avatar definitivo"></div><p><b>KAIROS</b><span data-kairos-status>LISTA PARA PRESENTAR</span></p></div>
+        </header>
+        <div class="conversion-stage">
+          <div class="conversion-intro reveal" data-step="0" data-until="1"><span>CONVERSIÓN</span><strong>VARIABLE CRÍTICA</strong><b>4% · 5% · 6%</b></div>
+          <svg class="conversion-chart" viewBox="0 0 1000 330" role="img" aria-label="Tres trayectorias financieras comparadas para conversiones de 4, 5 y 6 por ciento">
+            <g class="conversion-grid"><path d="M45 45H955M45 115H955M45 185H955M45 255H955"/><path d="M45 30V270M272 30V270M500 30V270M727 30V270M955 30V270"/></g>
+            <path class="scenario-curve curve-four reveal" data-step="3" pathLength="1" d="M45 80 C180 100 250 205 360 245 C500 292 675 260 790 218 C865 190 920 170 955 158"/>
+            <path class="scenario-curve curve-five reveal" data-step="9" pathLength="1" d="M45 80 C175 92 245 184 330 218 C445 258 590 185 715 130 C820 85 900 62 955 48"/>
+            <path class="scenario-curve curve-six reveal" data-step="15" pathLength="1" d="M45 80 C160 82 215 155 295 174 C405 198 520 116 650 76 C770 40 875 25 955 18"/>
+          </svg>
+          <div class="scenario scenario-four reveal" data-step="2"><span>ESCENARIO CAUTELOSO</span><strong>4%</strong><p class="reveal" data-step="3">RENTABILIDAD OPERATIVA <b>≈ MES 22</b></p><p class="reveal" data-step="5">NECESIDAD MÁXIMA DE CAJA <b>≈ $58K – $63K</b></p><p class="reveal" data-step="6">RECUPERACIÓN <b>&gt; 48 MESES</b></p><em class="reveal" data-step="7">CAPITAL CASI AGOTADO</em></div>
+          <div class="scenario scenario-five reveal" data-step="8"><span>ESCENARIO BASE</span><strong>5%</strong><p class="reveal" data-step="9">RENTABILIDAD OPERATIVA <b>MES 15</b></p><p class="reveal" data-step="10">EXPOSICIÓN MÁXIMA <b>$50,955</b></p><p class="reveal" data-step="11">RECUPERACIÓN <b>MES 43</b></p><p class="reveal" data-step="12">RESULTADO OPERATIVO ACUMULADO GENERADO · 48 MESES <b>≈ $41,593</b></p><em class="reveal" data-step="13">VIABLE · CON MARGEN DELGADO</em></div>
+          <div class="scenario scenario-six reveal" data-step="14"><span>ESCENARIO FAVORABLE</span><strong>6%</strong><p class="reveal" data-step="15">RENTABILIDAD <b>ANTES DEL ESCENARIO BASE</b></p><p class="reveal" data-step="16">MENOR NECESIDAD DE CAPITAL</p><p class="reveal" data-step="17">RECUPERACIÓN MÁS RÁPIDA</p><p class="reveal" data-step="18">BENEFICIO PROYECTADO · MES 48 <b>≈ $96,500</b></p><em class="reveal" data-step="19">NEGOCIO SALUDABLE</em></div>
+          <div class="percentage-reading reveal" data-step="21"><strong>2 PUNTOS PORCENTUALES</strong><span>PUEDEN SEPARAR</span><div><b>CAPITAL CASI AGOTADO</b><i>DE</i><b>NEGOCIO SALUDABLE</b></div></div>
+          <div class="conversion-close reveal" data-step="23">CONVERSIÓN<br /><strong>NO ES UNA MÉTRICA SECUNDARIA.</strong><br /><span>ES UNA VARIABLE<br />QUE PUEDE DECIDIR<br />EL RESULTADO DE ORHA.</span></div>
+        </div>
+        <button class="replay-scene" data-replay="3" type="button">REPRODUCIR DE NUEVO</button>
+      </section>
+
+      <section class="scene scene-five audiovisual-scene" data-scene="4" aria-labelledby="scene-five-title" hidden>
+        <header class="scene-five-head reveal" data-step="0">
+          <div><p class="kicker">RECOMENDACIÓN ESTRATÉGICA</p><h2 id="scene-five-title">¿Cómo debería invertir<br />el capital disponible?</h2></div>
+          <div class="kairos-stage"><div class="avatar-mount" data-avatar-mount aria-label="Punto de montaje para el avatar definitivo"></div><p><b>KAIROS</b><span data-kairos-status>LISTA PARA PRESENTAR</span></p></div>
+        </header>
+        <div class="strategy-stage">
+          <div class="liquid-capital reveal" data-step="0" data-until="1"><span>CAPITAL LÍQUIDO</span><strong>$39,000</strong></div>
+          <div class="not-all-in reveal" data-step="1" data-until="2"><span>NO ALL-IN</span><div><i></i><i></i><i></i></div><strong>$39,000</strong></div>
+          <div class="capital-stages reveal" data-step="2" data-until="3"><b>CAPITAL</b><i>→</i><span>ETAPA 1</span><i>→</i><span>ETAPA 2</span><i>→</i><span>ETAPA 3</span></div>
+          <div class="capital-evidence reveal" data-step="3" data-until="4"><strong>CAPITAL</strong><i>→</i><strong>EVIDENCIA</strong><small>CRECIMIENTO QUE PRODUCE APRENDIZAJE MEDIBLE</small></div>
+          <div class="evidence-variables reveal" data-step="4" data-until="7"><p>LA EVIDENCIA DECIDE</p><div><span>CONVERSIÓN</span><span>CAC</span><span>RETENCIÓN</span><span>CHURN</span></div></div>
+          <div class="strategy-routes">
+            <article class="route route-accelerate reveal" data-step="5" data-until="7"><span>MEJOR QUE EL MODELO</span><i>↓</i><strong>ACELERAR</strong></article>
+            <article class="route route-continue reveal" data-step="6" data-until="7"><span>CERCA DEL MODELO</span><i>↓</i><strong>CONTINUAR</strong></article>
+            <article class="route route-stop reveal" data-step="7" data-until="7"><span>PEOR QUE EL MODELO</span><i>↓</i><strong>AJUSTAR / DETENER</strong></article>
+          </div>
+          <div class="learning-runway reveal" data-step="8" data-until="8"><span>CAPITAL</span><strong>= TIEMPO PARA APRENDER</strong><div><i></i><i></i><i></i><i></i><i></i></div><small>CAPACIDAD DE MEDIR · CORREGIR · DECIDIR</small></div>
+          <div class="strategy-close close-less reveal" data-step="9" data-until="9">NO INVERTIR MENOS.</div>
+          <div class="strategy-close close-control reveal" data-step="10" data-until="10">INVERTIR<br /><strong>CON CONTROL.</strong></div>
+          <div class="strategy-close close-evidence reveal" data-step="11">EVIDENCIA<br /><strong>ANTES DE LIBERAR</strong><br />MÁS CAPITAL.</div>
+        </div>
+        <button class="replay-scene" data-replay="4" type="button">REPRODUCIR DE NUEVO</button>
+      </section>
+
+      <section class="scene scene-six audiovisual-scene" data-scene="5" aria-labelledby="scene-six-title" hidden>
+        <header class="scene-six-head reveal" data-step="0">
+          <div><p class="kicker">ARQUITECTURA DE EJECUCIÓN</p><h2 id="scene-six-title">TRES CAMINOS PARA EJECUTAR ORHA</h2></div>
+          <div class="kairos-stage"><div class="avatar-mount" data-avatar-mount aria-label="Punto de montaje para el avatar definitivo"></div><p><b>KAIROS</b><span data-kairos-status>LISTA PARA PRESENTAR</span></p></div>
+        </header>
+        <div class="paths-stage">
+          <div class="same-destination reveal" data-step="0" data-until="1"><strong>ORHA</strong><span>MISMA VISIÓN · MISMA CALIDAD</span><div><i></i><i></i><i></i></div></div>
+          <div class="exposure-scale reveal" data-step="1" data-until="1"><strong>LO QUE CAMBIA ES LA EXPOSICIÓN DE CAPITAL</strong><div><span>MAYOR COMPROMISO INICIAL</span><i>↔</i><span>MAYOR FLEXIBILIDAD</span></div></div>
+          <article class="execution-path path-current reveal" data-step="2" data-until="5"><small>CAMINO A</small><h3>MODELO ACTUAL</h3><em>MAYOR COMPROMISO INICIAL</em>
+            <div class="current-costs reveal" data-step="3"><p>TIENDAS / APP STORE<strong>15%</strong><small>SUPUESTO DEL MODELO</small></p><p>PAUTA<strong>$1,500 / MES</strong></p><p>AGENCIA<strong>$2,200 / MES</strong></p></div>
+            <div class="marketing-total reveal" data-step="4"><span>MARKETING</span><strong>$3,700 / MES</strong><small>$1,500 PAUTA + $2,200 AGENCIA</small></div>
+            <div class="base-cushion reveal" data-step="5"><p>CAPITAL LÍQUIDO<strong>$39,000</strong></p><i>↓</i><p>COLCHÓN BASE<strong>$12,963</strong></p><em>MENOR ESPACIO PARA EQUIVOCARSE</em></div>
+          </article>
+          <article class="execution-path path-optimized reveal" data-step="6" data-until="10"><small>CAMINO B</small><h3>MODELO OPTIMIZADO</h3><em>MISMA CALIDAD · MÁS CONTROL</em>
+            <aside class="path-memory-a reveal" data-step="6" data-until="10"><small>CAMINO A</small><span>MODELO ACTUAL</span><strong>MAYOR COMPROMISO INICIAL</strong></aside>
+            <div class="direct-channel reveal" data-step="7"><p>ORHA DIRECT<strong>NÚCLEO DEL SERVICIO</strong></p><i>↓</i><p>APP STORE<strong>CANAL SI DEMUESTRA VALOR</strong></p></div>
+            <div class="lean-marketing reveal" data-step="8"><p>PAUTA<strong>SE MANTIENE PARA APRENDER</strong></p><b>VS.</b><p>ESTRUCTURA FIJA<strong>DEBE DEMOSTRAR RETORNO</strong></p></div>
+            <div class="premium-landing reveal" data-step="9"><span>LANDING PREMIUM</span><i>↓</i><strong>CONSTRUIR EFICIENTEMENTE</strong><i>↓</i><span>PROBAR · MEDIR · OPTIMIZAR</span><small>EL CLIENTE NO DEBE VER EL AHORRO.<br />DEBE VER LA CALIDAD.</small></div>
+            <div class="visible-value reveal" data-step="10"><span>OPTIMIZAR LO QUE EL CLIENTE NO VE</span><strong>LO QUE EL CLIENTE SÍ VE</strong></div>
+          </article>
+          <article class="execution-path path-evidence reveal" data-step="11" data-until="13"><small>CAMINO C</small><h3>EVIDENCIA PRIMERO</h3><em>MENOR EXPOSICIÓN INICIAL</em>
+            <div class="test-cycle reveal" data-step="11"><span>CAPITAL</span><i>→</i><span>TEST</span><i>→</i><span>DATOS</span><i>→</i><span>SIGUIENTE INVERSIÓN</span><small>CONVERSIÓN · CAC · RETENCIÓN · CHURN</small></div>
+            <div class="data-branches"><p class="reveal" data-step="12">DATOS MEJORES<i>↓</i><strong>ACELERAR</strong><small>MÁS CAPITAL · MÁS CANALES · MÁS CAPACIDAD</small></p><p class="reveal" data-step="13">DATOS DÉBILES<i>↓</i><strong>CORREGIR ANTES DE ESCALAR</strong></p></div>
+          </article>
+          <div class="paths-comparison reveal" data-step="14" data-until="14"><h3>MISMA ORHA <small>PREMIUM</small></h3><div><p>A — MODELO ACTUAL<strong>MAYOR COMPROMISO INICIAL</strong></p><p>B — MODELO OPTIMIZADO<strong>MAYOR EFICIENCIA DE CAPITAL</strong></p><p>C — EVIDENCIA PRIMERO<strong>MAYOR FLEXIBILIDAD</strong></p></div></div>
+          <div class="paths-close reveal" data-step="15">LA PREGUNTA NO ES<br /><strong>QUÉ ORHA QUIERES CONSTRUIR.</strong><span>ESA YA LA DEFINISTE.</span><b>¿CUÁNTO CAPITAL QUIERES ARRIESGAR<br />ANTES DE DEMOSTRAR<br />QUE EL MERCADO TAMBIÉN LA QUIERE?</b></div>
+        </div>
+        <button class="replay-scene" data-replay="5" type="button">REPRODUCIR DE NUEVO</button>
+      </section>
+
+      <section class="scene scene-seven audiovisual-scene" data-scene="6" aria-labelledby="scene-seven-title" hidden>
+        <header class="scene-seven-head reveal" data-step="0"><div><p class="kicker">EVIDENCIA ANTES DE CADA NUEVO TRAMO</p><h2 id="scene-seven-title">PUERTAS DE CAPITAL</h2></div><div class="kairos-stage"><div class="avatar-mount" data-avatar-mount></div><p><b>KAIROS</b><span data-kairos-status>LISTA PARA PRESENTAR</span></p></div></header>
+        <div class="gates-stage">
+          <div class="capital-gates reveal" data-step="0" data-until="1"><span>CAPITAL</span><i>→</i><b>PUERTA 1</b><i>→</i><b>PUERTA 2</b><i>→</i><b>PUERTA 3</b><i>→</i><span>ESCALAR</span></div>
+          <article class="capital-gate gate-one reveal" data-step="2" data-until="4"><small>PUERTA 1</small><h3>ANTES DE LANZAR</h3><em>¿PODEMOS MEDIR LO QUE IMPORTA?</em><div class="gate-metrics reveal" data-step="3">CONVERSIÓN · CAC / COSTO REAL DE ADQUISICIÓN · RETENCIÓN · CHURN · COSTO REAL POR USUARIO</div><div class="test-architecture reveal" data-step="4">ARQUITECTURA EN PRUEBA<strong>APP STORE / ORHA DIRECT / HÍBRIDA</strong><b>SIN MEDICIÓN<br />NO HAY CAPITAL INTELIGENTE.</b></div></article>
+          <article class="capital-gate gate-two reveal" data-step="5" data-until="11"><small>PUERTA 2</small><h3>≈ MES 3</h3><section class="model-fact reveal" data-step="6"><b>HECHO / MODELO</b><p>EXPOSICIÓN TOTAL<strong>$36,437.86</strong></p><p>YA INVERTIDO<strong>$24,918</strong></p><p>CAPITAL NUEVO SEGÚN MODELO · MES 3<strong>≈ $11.5K</strong></p></section><section class="kairos-threshold reveal" data-step="7"><b>UMBRAL DE DECISIÓN DE KAIROS</b><strong>≈ $13K</strong><span>LÍMITE PROPUESTO ANTES DE LA PRIMERA REVISIÓN</span></section><div class="conversion-light reveal" data-step="9"><p>&lt; 4.5%<strong>CORREGIR</strong></p><p>4.5% – 5%<strong>CONTINUAR CON CAUTELA</strong></p><p>≥ 5%<strong>VALIDA ESCENARIO BASE</strong></p><small>UMBRAL DE DECISIÓN · NO HECHO DEL MODELO</small></div></article>
+          <article class="capital-gate gate-three reveal" data-step="12" data-until="19"><small>PUERTA 3</small><h3>MES 6</h3><em>FIN DEL PILOTO</em><div class="cac-validation reveal" data-step="13">EL MODELO SOLO ESCALA PAUTA<br /><strong>SI SE VALIDA EL CAC.</strong></div><div class="pilot-signals reveal" data-step="15">CONVERSIÓN · CAC · RETENCIÓN · CHURN</div><div class="pilot-decisions"><p class="reveal" data-step="16">MEJOR QUE EL MODELO<strong>ACELERAR</strong></p><p class="reveal" data-step="17">CERCA DEL MODELO<strong>CONTINUAR</strong></p><p class="reveal" data-step="18">POR DEBAJO<strong>CORREGIR</strong></p><p class="reveal" data-step="19">SEÑALES DETERIORADAS<strong>CONSERVAR CAPITAL</strong></p></div></article>
+          <div class="gates-summary reveal" data-step="20" data-until="20"><div><p>PUERTA 1<strong>MEDIR</strong></p><p>PUERTA 2<strong>VALIDAR</strong></p><p>PUERTA 3<strong>ESCALAR</strong></p></div><span>CAPITAL ↓ EVIDENCIA ↓ AUTORIZACIÓN</span><b>NO LIBERAR CAPITAL PORQUE PASÓ EL TIEMPO.<br />LIBERARLO PORQUE LA EVIDENCIA LO JUSTIFICA.</b></div>
+          <div class="gates-close reveal" data-step="21">EL DINERO SE LIBERA<br /><strong>CUANDO LA EVIDENCIA</strong><br />GANA EL DERECHO A PEDIRLO.</div>
+        </div><button class="replay-scene" data-replay="6" type="button">REPRODUCIR DE NUEVO</button>
       </section>
 
       <nav class="controls" aria-label="Controles de presentación">
         <div><button id="previous" type="button" aria-label="Escena anterior">←</button><button id="play-pause" type="button"><i>▶</i><span>Reproducir</span></button><button id="next" type="button" aria-label="Siguiente escena">→</button></div>
         <div class="scene-progress"><span id="progress"></span></div>
-        <p><b id="scene-number">01</b> / 02</p>
+        <p><b id="scene-number">01</b> / 07</p>
       </nav>
     </main>
     <script src="app.js"></script>
