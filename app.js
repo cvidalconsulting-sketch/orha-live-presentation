@@ -5,6 +5,41 @@
   const introPlay = document.querySelector('[data-intro-play]');
   const NativeAudio = window.Audio;
 
+  let sceneEightVideo = null;
+  const experience = document.querySelector('.experience');
+  const controlsNav = document.querySelector('.controls');
+  if (experience && controlsNav && typeof document.createElement === 'function') {
+    const sceneEight = document.createElement('section');
+    sceneEight.className = 'scene scene-eight audiovisual-scene';
+    sceneEight.setAttribute('data-scene', '7');
+    sceneEight.setAttribute('aria-label', 'Propuesta Kairos Studio y Kairos Finance');
+    sceneEight.hidden = true;
+    sceneEight.innerHTML = `
+      <div class="scene-eight-frame">
+        <video class="scene-eight-video" data-scene-eight-video preload="auto" playsinline aria-label="Kairos presenta la propuesta de servicios para ORHA">
+          <source src="media/scene-08-kairos-github.mp4" type="video/mp4" />
+        </video>
+      </div>
+      <button class="replay-scene scene-eight-replay" data-replay="7" type="button">REPRODUCIR DE NUEVO</button>`;
+    experience.insertBefore(sceneEight, controlsNav);
+    sceneEightVideo = sceneEight.querySelector('[data-scene-eight-video]');
+    if (sceneEightVideo) {
+      sceneEightVideo.controls = false;
+      sceneEightVideo.muted = false;
+      sceneEightVideo.playsInline = true;
+      sceneEightVideo.disablePictureInPicture = true;
+      sceneEightVideo.load?.();
+    }
+
+    const sceneCount = controlsNav.querySelector('p');
+    if (sceneCount) sceneCount.innerHTML = '<b id="scene-number">01</b> / 08';
+
+    const sceneEightStyle = document.createElement('style');
+    sceneEightStyle.id = 'scene-eight-kairos-video';
+    sceneEightStyle.textContent = `.scene-eight{padding:0;background:#020706}.scene-eight-frame{position:absolute;inset:0;display:grid;place-items:center;background:#020706;overflow:hidden}.scene-eight-video{display:block;width:100%;height:100%;object-fit:contain;background:#020706}.scene-eight-replay{z-index:5}@media(max-width:760px){.scene-eight-video{object-fit:contain}}`;
+    document.head?.appendChild?.(sceneEightStyle);
+  }
+
   let kairosVideo = null;
   if (portrait && typeof document.createElement === 'function') {
     kairosVideo = document.createElement('video');
@@ -45,11 +80,15 @@
     kairosVideo.load?.();
   }
 
-  if (typeof NativeAudio === 'function' && kairosVideo) {
+  if (typeof NativeAudio === 'function' && (kairosVideo || sceneEightVideo)) {
     function ORHAAudio(src) {
-      if (src === 'media/scene-01-kairos.mp3') {
+      if (src === 'media/scene-01-kairos.mp3' && kairosVideo) {
         try { kairosVideo.currentTime = 0; } catch (_) {}
         return kairosVideo;
+      }
+      if (src === 'media/scene-08-kairos-github.mp4' && sceneEightVideo) {
+        try { sceneEightVideo.currentTime = 0; } catch (_) {}
+        return sceneEightVideo;
       }
       return new NativeAudio(src);
     }
@@ -86,6 +125,13 @@
         src: 'media/scene-07-kairos.mp3',
         cues: [0, 5.21, 11.99, 19.95, 25.95, 33.12, 41.47, 45.51, 53.86, 66.13, 76.05, 85.19, 93.93, 101.50, 109.85, 120.16, 125.76, 130.98, 138.15, 146.50, 151.32, 162.42, 169.59, 177.55, 185.51, 192.68, 197.11, 202.32, 208.71, 215.10, 221.88, 225.13, 238.97, 247.72, 259.21, 267.17, 275.52, 287.01, 290.65, 295.47]
       };
+      window.ORHA.sceneMedia[7] = {
+        src: 'media/scene-08-kairos-github.mp4',
+        cues: [0]
+      };
+    }
+    if (window.ORHA?.timelines) {
+      window.ORHA.timelines[7] = ['No fue posible cargar la propuesta audiovisual. Revisa la conexión y vuelve a intentarlo.'];
     }
     if (introPlay) introPlay.disabled = false;
     if (introStatus && !window.ORHA?.getState?.().playing) introStatus.textContent = 'KAIROS · LISTA';
